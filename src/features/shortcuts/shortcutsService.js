@@ -71,6 +71,7 @@ class ShortcutsService {
             nextResponse: isMac ? 'Cmd+]' : 'Ctrl+]',
             scrollUp: isMac ? 'Cmd+Shift+Up' : 'Ctrl+Shift+Up',
             scrollDown: isMac ? 'Cmd+Shift+Down' : 'Ctrl+Shift+Down',
+            toggleListen: isMac ? 'Cmd+Shift+L' : 'Ctrl+Shift+L',
         };
     }
 
@@ -262,6 +263,28 @@ class ShortcutsService {
                     break;
                 case 'nextResponse':
                     callback = () => sendToRenderer('navigate-next-response');
+                    break;
+                case 'toggleListen':
+                    callback = async () => {
+                        const listenService = require('../listen/listenService');
+                        const isActive = listenService.isSessionActive();
+                        
+                        if (isActive) {
+                            // Stop listening and get transcription
+                            await listenService.handleListenRequest('Stop');
+                            const history = listenService.getConversationHistory();
+                            if (history.length > 0) {
+                                // Populate ask window with transcription
+                                const transcription = history.map(turn => turn.text).join(' ');
+                                sendToRenderer('populate-text-input', transcription);
+                                internalBridge.emit('window:requestVisibility', { name: 'ask', visible: true });
+                            }
+                            await listenService.handleListenRequest('Done');
+                        } else {
+                            // Start listening
+                            await listenService.handleListenRequest('Listen');
+                        }
+                    };
                     break;
             }
             

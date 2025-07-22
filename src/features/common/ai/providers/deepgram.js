@@ -50,6 +50,11 @@ function createSTT({
       smart_format: 'true',
       interim_results: 'true',
       channels: '1',
+      punctuate: 'true',
+      numerals: 'true',
+      diarize: 'true',
+      multichannel: 'false',
+      endpointing: '300'
     });
   
     const url = `wss://api.deepgram.com/v1/listen?${qs}`;
