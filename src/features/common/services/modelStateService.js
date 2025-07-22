@@ -342,6 +342,9 @@ class ModelStateService extends EventEmitter {
             if (!setting.api_key) continue;
 
             const providerId = setting.provider;
+            // Hide Gemini from UI but keep functionality
+            if (providerId === 'gemini') continue;
+            
             if (providerId === 'ollama' && type === 'llm') {
                 const installed = ollamaModelRepository.getInstalledModels();
                 available.push(...installed.map(m => ({ id: m.name, name: m.name })));

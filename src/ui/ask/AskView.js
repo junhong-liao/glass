@@ -803,6 +803,13 @@ export class AskView extends LitElement {
                   }
                 }
               });
+
+            // Listen for conversation text from Listen mode
+            window.api.askView.onPopulateInput((event, data) => {
+                console.log('AskView: Received conversation text from Listen mode');
+                this.populateInputField(data.text);
+            });
+
             console.log('AskView: IPC 이벤트 리스너 등록 완료');
         }
     }
@@ -936,6 +943,20 @@ export class AskView extends LitElement {
                 textInput.focus();
             }
         });
+    }
+
+    populateInputField(text) {
+        const textInput = this.shadowRoot?.getElementById('textInput');
+        if (textInput) {
+            textInput.value = text;
+            // Show text input if it's not already visible
+            if (!this.showTextInput) {
+                this.showTextInput = true;
+                this.updateComplete.then(() => this.focusTextInput());
+            } else {
+                this.focusTextInput();
+            }
+        }
     }
 
 

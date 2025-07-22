@@ -236,8 +236,20 @@ class ListenService {
 
             await this.stopMacOSAudioCapture();
 
-            // End database session
+            // End database session and copy conversation to Ask window
             if (this.currentSessionId) {
+                // Format and send conversation to Ask window before ending session
+                const conversationText = await this.formatSessionForAskWindow(this.currentSessionId);
+                if (conversationText.trim()) {
+                    try {
+                        const { ipcMain } = require('electron');
+                        // Send conversation to Ask window via IPC
+                        internalBridge.emit('send-conversation-to-ask', conversationText);
+                    } catch (error) {
+                        console.error('Error sending conversation to Ask window:', error);
+                    }
+                }
+                
                 await sessionRepository.end(this.currentSessionId);
                 console.log(`[DB] Session ${this.currentSessionId} ended.`);
             }
@@ -251,6 +263,25 @@ class ListenService {
         } catch (error) {
             console.error('Error closing listen service session:', error);
             return { success: false, error: error.message };
+        }
+    }
+
+    async formatSessionForAskWindow(sessionId) {
+        if (!sessionId) return '';
+        
+        try {
+            const transcripts = await sttRepository.getAllTranscriptsBySessionId(sessionId);
+            if (!transcripts || transcripts.length === 0) return '';
+            
+            // Format as "Speaker: Message" with line breaks
+            const formattedConversation = transcripts
+                .map(transcript => `${transcript.speaker}: ${transcript.text}`)
+                .join('\n');
+                
+            return formattedConversation;
+        } catch (error) {
+            console.error('Error formatting session for Ask window:', error);
+            return '';
         }
     }
 

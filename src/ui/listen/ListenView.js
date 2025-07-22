@@ -433,7 +433,7 @@ export class ListenView extends LitElement {
         super();
         this.isSessionActive = false;
         this.hasCompletedRecording = false;
-        this.viewMode = 'insights';
+        this.viewMode = 'transcript';
         this.isHovering = false;
         this.isAnimating = false;
         this.elapsedTime = '00:00';

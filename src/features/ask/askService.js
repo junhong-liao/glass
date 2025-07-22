@@ -443,8 +443,30 @@ class AskService {
         );
     }
 
+    /**
+     * Populate the Ask window input field with text without submitting
+     * @param {string} text - The text to populate in the input field
+     */
+    async populateInputWithText(text) {
+        if (!text || !text.trim()) return;
+        
+        // Show the Ask window
+        internalBridge.emit('window:requestVisibility', { name: 'ask', visible: true });
+        
+        // Get the Ask window and send the text to populate the input
+        const askWindow = getWindowPool()?.get('ask');
+        if (askWindow && !askWindow.isDestroyed()) {
+            askWindow.webContents.send('populate-input', { text: text.trim() });
+        }
+    }
+
 }
 
 const askService = new AskService();
+
+// Set up internalBridge event handler for conversation copying from Listen mode
+internalBridge.on('send-conversation-to-ask', async (conversationText) => {
+    await askService.populateInputWithText(conversationText);
+});
 
 module.exports = askService;

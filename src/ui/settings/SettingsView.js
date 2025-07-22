@@ -1194,7 +1194,7 @@ export class SettingsView extends LitElement {
         const apiKeyManagementHTML = html`
             <div class="api-key-section">
                 ${Object.entries(this.providerConfig)
-                    .filter(([id, config]) => !id.includes('-glass'))
+                    .filter(([id, config]) => !id.includes('-glass') && id !== 'gemini')
                     .map(([id, config]) => {
                         if (id === 'ollama') {
                             // Special UI for Ollama
@@ -1351,7 +1351,7 @@ export class SettingsView extends LitElement {
             <div class="settings-container">
                 <div class="header-section">
                     <div>
-                        <h1 class="app-title">Pickle Glass</h1>
+                        <h1 class="app-title">Junhong AI</h1>
                         <div class="account-info">
                             ${this.firebaseUser
                                 ? html`Account: ${this.firebaseUser.email || 'Logged In'}`
