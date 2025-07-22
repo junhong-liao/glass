@@ -2,6 +2,7 @@ const { globalShortcut, screen } = require('electron');
 const shortcutsRepository = require('./repositories');
 const internalBridge = require('../../bridge/internalBridge');
 const askService = require('../ask/askService');
+const listenService = require('../listen/listenService');
 
 
 class ShortcutsService {
@@ -266,22 +267,11 @@ class ShortcutsService {
                     break;
                 case 'toggleListen':
                     callback = async () => {
-                        const listenService = require('../listen/listenService');
                         const isActive = listenService.isSessionActive();
-                        
                         if (isActive) {
-                            // Stop listening and get transcription
                             await listenService.handleListenRequest('Stop');
-                            const history = listenService.getConversationHistory();
-                            if (history.length > 0) {
-                                // Populate ask window with transcription
-                                const transcription = history.map(turn => turn.text).join(' ');
-                                sendToRenderer('populate-text-input', transcription);
-                                internalBridge.emit('window:requestVisibility', { name: 'ask', visible: true });
-                            }
                             await listenService.handleListenRequest('Done');
                         } else {
-                            // Start listening
                             await listenService.handleListenRequest('Listen');
                         }
                     };
