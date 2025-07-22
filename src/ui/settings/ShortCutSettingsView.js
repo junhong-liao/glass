@@ -11,7 +11,8 @@ const displayNameMap = {
     moveDown: 'Move Down Window',
     scrollUp: 'Scroll Up Response',
     scrollDown: 'Scroll Down Response',
-    toggleListen: 'Toggle Listen Mode',
+    toggleListen: 'Listen',
+    toggleVisibility: 'Show/Hide',
   };
 
 export class ShortcutSettingsView extends LitElement {

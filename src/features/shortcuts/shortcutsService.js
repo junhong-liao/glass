@@ -270,7 +270,6 @@ class ShortcutsService {
                         const isActive = listenService.isSessionActive();
                         if (isActive) {
                             await listenService.handleListenRequest('Stop');
-                            await listenService.handleListenRequest('Done');
                         } else {
                             await listenService.handleListenRequest('Listen');
                         }

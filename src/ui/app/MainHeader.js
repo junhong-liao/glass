@@ -11,6 +11,12 @@ export class MainHeader extends LitElement {
         :host {
             display: flex;
             transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.2s ease-out;
+            
+            /* Systematic Spacing Variables */
+            --button-internal-padding: 6px 12px;
+            --inter-element-gap: 12px;
+            --header-horizontal-padding: 16px;
+            --header-vertical-padding: 4px;
         }
 
         :host(.hiding) {
@@ -41,15 +47,17 @@ export class MainHeader extends LitElement {
         .header {
             -webkit-app-region: drag;
             width: max-content;
+            min-width: fit-content;
             height: 47px;
-            padding: 2px 10px 2px 13px;
+            padding: var(--header-vertical-padding) var(--header-horizontal-padding);
             background: transparent;
             overflow: hidden;
             border-radius: 9000px;
             /* backdrop-filter: blur(1px); */
-            justify-content: space-between;
+            gap: var(--inter-element-gap);
             align-items: center;
             display: inline-flex;
+            justify-content: flex-start;
             box-sizing: border-box;
             position: relative;
         }
@@ -83,11 +91,10 @@ export class MainHeader extends LitElement {
         .listen-button {
             -webkit-app-region: no-drag;
             height: 26px;
-            padding: 0 13px;
+            padding: var(--button-internal-padding);
             background: transparent;
             border-radius: 9000px;
             justify-content: center;
-            width: 78px;
             align-items: center;
             gap: 6px;
             display: flex;
@@ -109,23 +116,6 @@ export class MainHeader extends LitElement {
             background: rgba(255, 20, 20, 0.6);
         }
 
-        .listen-button.done {
-            background-color: rgba(255, 255, 255, 0.6);
-            transition: background-color 0.15s ease;
-        }
-
-        .listen-button.done .action-text-content {
-            color: black;
-        }
-        
-        .listen-button.done .listen-icon svg rect,
-        .listen-button.done .listen-icon svg path {
-            fill: black;
-        }
-
-        .listen-button.done:hover {
-            background-color: #f0f0f0;
-        }
 
         .listen-button:hover::before {
             background: rgba(255, 255, 255, 0.18);
@@ -156,9 +146,6 @@ export class MainHeader extends LitElement {
             pointer-events: none;
         }
 
-        .listen-button.done::after {
-            display: none;
-        }
 
         .loading-dots {
             display: flex;
@@ -194,9 +181,9 @@ export class MainHeader extends LitElement {
             box-sizing: border-box;
             justify-content: flex-start;
             align-items: center;
-            gap: 9px;
+            gap: 6px;
             display: flex;
-            padding: 0 8px;
+            padding: var(--button-internal-padding);
             border-radius: 6px;
             transition: background 0.15s ease;
         }
@@ -205,9 +192,6 @@ export class MainHeader extends LitElement {
             background: rgba(255, 255, 255, 0.1);
         }
 
-        .ask-action {
-            margin-left: 4px;
-        }
 
         .action-button,
         .action-text {
@@ -262,7 +246,7 @@ export class MainHeader extends LitElement {
 
         .settings-button {
             -webkit-app-region: no-drag;
-            padding: 5px;
+            padding: var(--button-internal-padding);
             border-radius: 50%;
             background: transparent;
             transition: background 0.15s ease;
@@ -361,7 +345,7 @@ export class MainHeader extends LitElement {
         switch (status) {
             case 'beforeSession': return 'Listen';
             case 'inSession'   : return 'Stop';
-            case 'afterSession': return 'Done';
+            case 'afterSession': return 'Listen';
             default            : return 'Listen';
         }
     }
@@ -467,6 +451,39 @@ export class MainHeader extends LitElement {
         this.classList.add('sliding-in');
     }
 
+    updated(changedProperties) {
+        super.updated(changedProperties);
+        // Measure and resize window after any property changes that affect layout
+        this.measureAndResizeWindow();
+    }
+
+    async measureAndResizeWindow() {
+        if (!window.api) return;
+        
+        // Wait for next frame to ensure rendering is complete
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        
+        const header = this.shadowRoot.querySelector('.header');
+        if (!header) return;
+        
+        // Get the actual content width
+        const headerWidth = header.offsetWidth;
+        const paddingBuffer = 40; // Add generous padding for rounded corners
+        const finalWidth = headerWidth + paddingBuffer;
+        
+        console.log(`[MainHeader] Measured header width: ${headerWidth}px, resizing window to: ${finalWidth}px`);
+        
+        // Resize window to fit content
+        try {
+            await window.api.headerController.resizeHeaderWindow({ 
+                width: finalWidth, 
+                height: 47 
+            });
+        } catch (error) {
+            console.error('[MainHeader] Failed to resize window:', error);
+        }
+    }
+
     connectedCallback() {
         super.connectedCallback();
         this.addEventListener('animationend', this.handleAnimationEnd);
@@ -477,19 +494,23 @@ export class MainHeader extends LitElement {
                 if (success) {
                     this.listenSessionStatus = ({
                         beforeSession: 'inSession',
-                        inSession: 'afterSession',
+                        inSession: 'beforeSession',
                         afterSession: 'beforeSession',
                     })[this.listenSessionStatus] || 'beforeSession';
                 } else {
                     this.listenSessionStatus = 'beforeSession';
                 }
                 this.isTogglingSession = false; // ✨ 로딩 상태만 해제
+                // Resize window after status change
+                this.measureAndResizeWindow();
             };
             window.api.mainHeader.onListenChangeSessionResult(this._sessionStateTextListener);
 
             this._shortcutListener = (event, keybinds) => {
                 console.log('[MainHeader] Received updated shortcuts:', keybinds);
                 this.shortcuts = keybinds;
+                // Resize window after shortcuts change
+                this.measureAndResizeWindow();
             };
             window.api.mainHeader.onShortcutsUpdated(this._shortcutListener);
         }
@@ -603,9 +624,8 @@ export class MainHeader extends LitElement {
     
         const buttonClasses = {
             active: listenButtonText === 'Stop',
-            done: listenButtonText === 'Done',
         };
-        const showStopIcon = listenButtonText === 'Stop' || listenButtonText === 'Done';
+        const showStopIcon = listenButtonText === 'Stop';
 
         return html`
             <div class="header" @mousedown=${this.handleMouseDown}>
@@ -624,21 +644,29 @@ export class MainHeader extends LitElement {
                             <div class="action-text">
                                 <div class="action-text-content">${listenButtonText}</div>
                             </div>
-                            <div class="listen-icon">
-                                ${showStopIcon
-                                    ? html`
-                                        <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <rect width="9" height="9" rx="1" fill="white"/>
-                                        </svg>
-                                    `
-                                    : html`
-                                        <svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M1.69922 2.7515C1.69922 2.37153 2.00725 2.0635 2.38722 2.0635H2.73122C3.11119 2.0635 3.41922 2.37153 3.41922 2.7515V8.2555C3.41922 8.63547 3.11119 8.9435 2.73122 8.9435H2.38722C2.00725 8.9435 1.69922 8.63547 1.69922 8.2555V2.7515Z" fill="white"/>
-                                            <path d="M5.13922 1.3755C5.13922 0.995528 5.44725 0.6875 5.82722 0.6875H6.17122C6.55119 0.6875 6.85922 0.995528 6.85922 1.3755V9.6315C6.85922 10.0115 6.55119 10.3195 6.17122 10.3195H5.82722C5.44725 10.3195 5.13922 10.0115 5.13922 9.6315V1.3755Z" fill="white"/>
-                                            <path d="M8.57922 3.0955C8.57922 2.71553 8.88725 2.4075 9.26722 2.4075H9.61122C9.99119 2.4075 10.2992 2.71553 10.2992 3.0955V7.9115C10.2992 8.29147 9.99119 8.5995 9.61122 8.5995H9.26722C8.88725 8.5995 8.57922 8.29147 8.57922 7.9115V3.0955Z" fill="white"/>
-                                        </svg>
-                                    `}
-                            </div>
+                            ${this.shortcuts.toggleListen && !showStopIcon
+                                ? html`
+                                    <div class="icon-container">
+                                        ${this.renderShortcut(this.shortcuts.toggleListen)}
+                                    </div>
+                                `
+                                : html`
+                                    <div class="listen-icon">
+                                        ${showStopIcon
+                                            ? html`
+                                                <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <rect width="9" height="9" rx="1" fill="white"/>
+                                                </svg>
+                                            `
+                                            : html`
+                                                <svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M1.69922 2.7515C1.69922 2.37153 2.00725 2.0635 2.38722 2.0635H2.73122C3.11119 2.0635 3.41922 2.37153 3.41922 2.7515V8.2555C3.41922 8.63547 3.11119 8.9435 2.73122 8.9435H2.38722C2.00725 8.9435 1.69922 8.63547 1.69922 8.2555V2.7515Z" fill="white"/>
+                                                    <path d="M5.13922 1.3755C5.13922 0.995528 5.44725 0.6875 5.82722 0.6875H6.17122C6.55119 0.6875 6.85922 0.995528 6.85922 1.3755V9.6315C6.85922 10.0115 6.55119 10.3195 6.17122 10.3195H5.82722C5.44725 10.3195 5.13922 10.0115 5.13922 9.6315V1.3755Z" fill="white"/>
+                                                    <path d="M8.57922 3.0955C8.57922 2.71553 8.88725 2.4075 9.26722 2.4075H9.61122C9.99119 2.4075 10.2992 2.71553 10.2992 3.0955V7.9115C10.2992 8.29147 9.99119 8.5995 9.61122 8.5995H9.26722C8.88725 8.5995 8.57922 8.29147 8.57922 7.9115V3.0955Z" fill="white"/>
+                                                </svg>
+                                            `}
+                                    </div>
+                                `}
                         `}
                 </button>
 
