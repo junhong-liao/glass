@@ -622,7 +622,7 @@ async function startWebStack() {
 
   const staticDir = app.isPackaged
     ? path.join(process.resourcesPath, 'out')
-    : path.join(__dirname, '..', 'subliminal_web', 'out');
+    : path.join(__dirname, '..', 'subliminal-web', 'out');
 
   const fs = require('fs');
 
@@ -630,7 +630,7 @@ async function startWebStack() {
     console.error(`============================================================`);
     console.error(`[ERROR] Frontend build directory not found!`);
     console.error(`Path: ${staticDir}`);
-    console.error(`Please run 'npm run build' inside the 'subliminal_web' directory first.`);
+    console.error(`Please run 'npm run build' inside the 'subliminal-web' directory first.`);
     console.error(`============================================================`);
     app.quit();
     return;
