@@ -467,18 +467,18 @@ function createFeatureWindows(header, namesToCreate) {
                     listen.setWindowButtonVisibility(false);
                 }
                 const listenLoadOptions = { query: { view: 'listen' } };
-                if (!shouldUseLiquidGlass) {
+                if (!shouldUseLiquidInterface) {
                     listen.loadFile(path.join(__dirname, '../ui/app/content.html'), listenLoadOptions);
                 }
                 else {
-                    listenLoadOptions.query.glass = 'true';
+                    listenLoadOptions.query.transparent = 'true';
                     listen.loadFile(path.join(__dirname, '../ui/app/content.html'), listenLoadOptions);
                     listen.webContents.once('did-finish-load', () => {
-                        const viewId = liquidGlass.addView(listen.getNativeWindowHandle());
+                        const viewId = liquidInterface.addView(listen.getNativeWindowHandle());
                         if (viewId !== -1) {
-                            liquidGlass.unstable_setVariant(viewId, liquidGlass.GlassMaterialVariant.bubbles);
-                            // liquidGlass.unstable_setScrim(viewId, 1);
-                            // liquidGlass.unstable_setSubdued(viewId, 1);
+                            liquidInterface.unstable_setVariant(viewId, liquidInterface.GlassMaterialVariant.bubbles);
+                            // liquidInterface.unstable_setScrim(viewId, 1);
+                            // liquidInterface.unstable_setSubdued(viewId, 1);
                         }
                     });
                 }
@@ -498,18 +498,18 @@ function createFeatureWindows(header, namesToCreate) {
                     ask.setWindowButtonVisibility(false);
                 }
                 const askLoadOptions = { query: { view: 'ask' } };
-                if (!shouldUseLiquidGlass) {
+                if (!shouldUseLiquidInterface) {
                     ask.loadFile(path.join(__dirname, '../ui/app/content.html'), askLoadOptions);
                 }
                 else {
-                    askLoadOptions.query.glass = 'true';
+                    askLoadOptions.query.transparent = 'true';
                     ask.loadFile(path.join(__dirname, '../ui/app/content.html'), askLoadOptions);
                     ask.webContents.once('did-finish-load', () => {
-                        const viewId = liquidGlass.addView(ask.getNativeWindowHandle());
+                        const viewId = liquidInterface.addView(ask.getNativeWindowHandle());
                         if (viewId !== -1) {
-                            liquidGlass.unstable_setVariant(viewId, liquidGlass.GlassMaterialVariant.bubbles);
-                            // liquidGlass.unstable_setScrim(viewId, 1);
-                            // liquidGlass.unstable_setSubdued(viewId, 1);
+                            liquidInterface.unstable_setVariant(viewId, liquidInterface.GlassMaterialVariant.bubbles);
+                            // liquidInterface.unstable_setScrim(viewId, 1);
+                            // liquidInterface.unstable_setSubdued(viewId, 1);
                         }
                     });
                 }
@@ -531,20 +531,20 @@ function createFeatureWindows(header, namesToCreate) {
                     settings.setWindowButtonVisibility(false);
                 }
                 const settingsLoadOptions = { query: { view: 'settings' } };
-                if (!shouldUseLiquidGlass) {
+                if (!shouldUseLiquidInterface) {
                     settings.loadFile(path.join(__dirname,'../ui/app/content.html'), settingsLoadOptions)
                         .catch(console.error);
                 }
                 else {
-                    settingsLoadOptions.query.glass = 'true';
+                    settingsLoadOptions.query.transparent = 'true';
                     settings.loadFile(path.join(__dirname,'../ui/app/content.html'), settingsLoadOptions)
                         .catch(console.error);
                     settings.webContents.once('did-finish-load', () => {
-                        const viewId = liquidGlass.addView(settings.getNativeWindowHandle());
+                        const viewId = liquidInterface.addView(settings.getNativeWindowHandle());
                         if (viewId !== -1) {
-                            liquidGlass.unstable_setVariant(viewId, liquidGlass.GlassMaterialVariant.bubbles);
-                            // liquidGlass.unstable_setScrim(viewId, 1);
-                            // liquidGlass.unstable_setSubdued(viewId, 1);
+                            liquidInterface.unstable_setVariant(viewId, liquidInterface.GlassMaterialVariant.bubbles);
+                            // liquidInterface.unstable_setScrim(viewId, 1);
+                            // liquidInterface.unstable_setSubdued(viewId, 1);
                         }
                     });
                 }
@@ -574,15 +574,15 @@ function createFeatureWindows(header, namesToCreate) {
                 }
 
                 const loadOptions = { query: { view: 'shortcut-settings' } };
-                if (!shouldUseLiquidGlass) {
+                if (!shouldUseLiquidInterface) {
                     shortcutEditor.loadFile(path.join(__dirname, '../ui/app/content.html'), loadOptions);
                 } else {
-                    loadOptions.query.glass = 'true';
+                    loadOptions.query.transparent = 'true';
                     shortcutEditor.loadFile(path.join(__dirname, '../ui/app/content.html'), loadOptions);
                     shortcutEditor.webContents.once('did-finish-load', () => {
-                        const viewId = liquidGlass.addView(shortcutEditor.getNativeWindowHandle());
+                        const viewId = liquidInterface.addView(shortcutEditor.getNativeWindowHandle());
                         if (viewId !== -1) {
-                            liquidGlass.unstable_setVariant(viewId, liquidGlass.GlassMaterialVariant.bubbles);
+                            liquidInterface.unstable_setVariant(viewId, liquidInterface.GlassMaterialVariant.bubbles);
                         }
                     });
                 }
@@ -680,18 +680,18 @@ function createWindows() {
         header.setWindowButtonVisibility(false);
     }
     const headerLoadOptions = {};
-    if (!shouldUseLiquidGlass) {
+    if (!shouldUseLiquidInterface) {
         header.loadFile(path.join(__dirname, '../ui/app/header.html'), headerLoadOptions);
     }
     else {
         headerLoadOptions.query = { glass: 'true' };
         header.loadFile(path.join(__dirname, '../ui/app/header.html'), headerLoadOptions);
         header.webContents.once('did-finish-load', () => {
-            const viewId = liquidGlass.addView(header.getNativeWindowHandle());
+            const viewId = liquidInterface.addView(header.getNativeWindowHandle());
             if (viewId !== -1) {
-                liquidGlass.unstable_setVariant(viewId, liquidGlass.GlassMaterialVariant.bubbles);
-                // liquidGlass.unstable_setScrim(viewId, 1); 
-                // liquidGlass.unstable_setSubdued(viewId, 1);
+                liquidInterface.unstable_setVariant(viewId, liquidInterface.GlassMaterialVariant.bubbles);
+                // liquidInterface.unstable_setScrim(viewId, 1); 
+                // liquidInterface.unstable_setSubdued(viewId, 1);
             }
         });
     }

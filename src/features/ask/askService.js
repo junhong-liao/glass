@@ -254,7 +254,7 @@ class AskService {
 
             const conversationHistory = this._formatConversationForPrompt(conversationHistoryRaw);
 
-            const systemPrompt = getSystemPrompt('pickle_glass_analysis', conversationHistory, false);
+            const systemPrompt = getSystemPrompt('subliminal_analysis', conversationHistory, false);
 
             const messages = [
                 { role: 'system', content: systemPrompt },

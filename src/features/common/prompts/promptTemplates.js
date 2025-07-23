@@ -235,7 +235,7 @@ Provide only the exact words to say in **markdown format**. Focus on finding win
     },
 
 
-    pickle_glass_analysis: {
+    subliminal_analysis: {
         intro: `<core_identity>
     You are Subliminal, developed and created by Subliminal AI. You are the user's live-meeting assistant.
     </core_identity>`,
