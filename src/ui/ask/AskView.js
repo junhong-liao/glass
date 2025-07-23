@@ -718,7 +718,7 @@ export class AskView extends LitElement {
         this.isLoading = false;
         this.copyState = 'idle';
         this.showTextInput = true;
-        this.headerText = 'AI Response';
+        this.headerText = 'Subliminal AI';
         this.headerAnimating = false;
         this.isStreaming = false;
 
@@ -925,7 +925,7 @@ export class AskView extends LitElement {
         this.currentQuestion = '';
         this.isLoading = false;
         this.isStreaming = false;
-        this.headerText = 'AI Response';
+        this.headerText = 'Subliminal AI';
         this.showTextInput = true;
         this.lastProcessedLength = 0;
         this.smdParser = null;
@@ -1351,7 +1351,7 @@ export class AskView extends LitElement {
 
     render() {
         const hasResponse = this.isLoading || this.currentResponse || this.isStreaming;
-        const headerText = this.isLoading ? 'Thinking...' : 'AI Response';
+        const headerText = this.isLoading ? 'Thinking...' : 'Subliminal AI:';
 
         return html`
             <div class="ask-container">
