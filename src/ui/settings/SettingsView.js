@@ -453,15 +453,15 @@ export class SettingsView extends LitElement {
             color: rgba(255,255,255,0.4);
         }
             
-        /* ────────────────[ GLASS BYPASS ]─────────────── */
-        :host-context(body.has-glass) {
+        /* ────────────────[ TRANSPARENT BYPASS ]─────────────── */
+        :host-context(body.has-transparent) {
             animation: none !important;
             transition: none !important;
             transform: none !important;
             will-change: auto !important;
         }
 
-        :host-context(body.has-glass) * {
+        :host-context(body.has-transparent) * {
             background: transparent !important;
             filter: none !important;
             backdrop-filter: none !important;
@@ -473,7 +473,7 @@ export class SettingsView extends LitElement {
             animation: none !important;
         }
 
-        :host-context(body.has-glass) .settings-container::before {
+        :host-context(body.has-transparent) .settings-container::before {
             display: none !important;
         }
     `;

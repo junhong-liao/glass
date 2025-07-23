@@ -6,7 +6,7 @@ import { ShortcutSettingsView } from '../settings/ShortCutSettingsView.js';
 
 import '../listen/audioCore/renderer.js';
 
-export class PickleGlassApp extends LitElement {
+export class SubliminalAIApp extends LitElement {
     static styles = css`
         :host {
             display: block;
@@ -75,7 +75,7 @@ export class PickleGlassApp extends LitElement {
         super.connectedCallback();
         
         if (window.api) {
-            window.api.pickleGlassApp.onClickThroughToggled((_, isEnabled) => {
+            window.api.subliminalAIApp.onClickThroughToggled((_, isEnabled) => {
                 this._isClickThrough = isEnabled;
             });
         }
@@ -84,7 +84,7 @@ export class PickleGlassApp extends LitElement {
     disconnectedCallback() {
         super.disconnectedCallback();
         if (window.api) {
-            window.api.pickleGlassApp.removeAllClickThroughListeners();
+            window.api.subliminalAIApp.removeAllClickThroughListeners();
         }
     }
 
@@ -158,4 +158,4 @@ export class PickleGlassApp extends LitElement {
     }
 }
 
-customElements.define('pickle-glass-app', PickleGlassApp);
+customElements.define('subliminal-ai-app', SubliminalAIApp);

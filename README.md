@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://subliminal.ai">
+  <a href="https://usesubliminal.com">
    <img src="./public/assets/banner.gif" alt="Logo">
   </a>
 
@@ -128,7 +128,7 @@ We have a list of [help wanted](https://github.com/pickle-com/glass/issues?q=is%
 
 ## About Subliminal AI
 
-**Our mission is to build a living digital clone for everyone.** Subliminal AI is part of Step 1—a trusted pipeline that transforms your daily data into a scalable clone. Visit [subliminal.ai](https://subliminal.ai) to learn more.
+**Our mission is to build a living digital clone for everyone.** Subliminal AI is part of Step 1—a trusted pipeline that transforms your daily data into a scalable clone. Visit [usesubliminal.com](https://usesubliminal.com) to learn more.
 
 ## Star History
 [![Star History Chart](https://api.star-history.com/svg?repos=pickle-com/glass&type=Date)](https://www.star-history.com/#pickle-com/glass&Date)

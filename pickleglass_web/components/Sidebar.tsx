@@ -480,7 +480,7 @@ const SidebarComponent = ({ isCollapsed, onToggle, onSearchClick }: SidebarProps
         >
             <header className={`group relative h-6 flex shrink-0 items-center justify-between`}>
                 {isCollapsed ? (
-                    <Link href="https://subliminal.ai" target="_blank" rel="noopener noreferrer" className="flex items-center">
+                    <Link href="https://usesubliminal.com" target="_blank" rel="noopener noreferrer" className="flex items-center">
                         <Image src="/symbol.svg" alt="Logo" width={20} height={20} className="mx-3 shrink-0" />
                         <button
                             onClick={toggleSidebar}
@@ -495,7 +495,7 @@ const SidebarComponent = ({ isCollapsed, onToggle, onSearchClick }: SidebarProps
                     </Link>
                 ) : (
                     <>
-                        <Link href="https://subliminal.ai" target="_blank" rel="noopener noreferrer" className="flex items-center">
+                        <Link href="https://usesubliminal.com" target="_blank" rel="noopener noreferrer" className="flex items-center">
                             <Image
                                 src={isCollapsed ? '/symbol.svg' : '/word.svg'}
                                 alt="Subliminal AI Logo"

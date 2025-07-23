@@ -7,9 +7,9 @@ const shortcutsService = require('../features/shortcuts/shortcutsService');
 const internalBridge = require('../bridge/internalBridge');
 const permissionRepository = require('../features/common/repositories/permission');
 
-/* ────────────────[ GLASS BYPASS ]─────────────── */
-let liquidGlass;
-const isLiquidGlassSupported = () => {
+/* ────────────────[ LIQUID INTERFACE ]─────────────── */
+let liquidInterface;
+const isLiquidInterfaceSupported = () => {
     if (process.platform !== 'darwin') {
         return false;
     }
@@ -17,16 +17,16 @@ const isLiquidGlassSupported = () => {
     // return majorVersion >= 25; // macOS 26+ (Darwin 25+)
     return majorVersion >= 26; // See you soon!
 };
-let shouldUseLiquidGlass = isLiquidGlassSupported();
-if (shouldUseLiquidGlass) {
+let shouldUseLiquidInterface = isLiquidInterfaceSupported();
+if (shouldUseLiquidInterface) {
     try {
-        liquidGlass = require('electron-liquid-glass');
+        liquidInterface = require('electron-liquid-glass');
     } catch (e) {
         console.warn('Could not load optional dependency "electron-liquid-glass". The feature will be disabled.');
-        shouldUseLiquidGlass = false;
+        shouldUseLiquidInterface = false;
     }
 }
-/* ────────────────[ GLASS BYPASS ]─────────────── */
+/* ────────────────[ LIQUID INTERFACE ]─────────────── */
 
 let isContentProtectionOn = true;
 let lastVisibleWindows = new Set(['header']);
@@ -425,7 +425,7 @@ const toggleContentProtection = () => {
 
 
 const openLoginPage = () => {
-    const webUrl = process.env.pickleglass_WEB_URL || 'http://localhost:3000';
+    const webUrl = process.env.SUBLIMINAL_AI_WEB_URL || 'http://localhost:3000';
     const personalizeUrl = `${webUrl}/personalize?desktop=true`;
     shell.openExternal(personalizeUrl);
     console.log('Opening personalization page:', personalizeUrl);
