@@ -228,9 +228,9 @@ class HeaderTransitionManager {
 
     async _resizeForMain() {
         if (!window.api) return;
-        // Initial size - will be dynamically adjusted by MainHeader component
-        console.log('[HeaderController] _resizeForMain: Setting initial window size to 400x47');
-        return window.api.headerController.resizeHeaderWindow({ width: 400, height: 47 }).catch(() => {});
+        // The MainHeader component will dynamically resize the window itself
+        // using a ResizeObserver, so no initial resize is needed here.
+        return Promise.resolve();
     }
 
     async _resizeForApiKey(height = 370) {

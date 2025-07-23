@@ -401,7 +401,7 @@ export class MainHeader extends LitElement {
 
     toggleVisibility() {
         if (this.isAnimating) {
-            console.log('[MainHeader] Animation already in progress, ignoring toggle');
+            // console.log('[MainHeader] Animation already in progress, ignoring toggle');
             return;
         }
         
@@ -460,20 +460,13 @@ export class MainHeader extends LitElement {
     async measureAndResizeWindow() {
         if (!window.api) return;
         
-        // Wait for next frame to ensure rendering is complete
-        await new Promise(resolve => requestAnimationFrame(resolve));
-        
         const header = this.shadowRoot.querySelector('.header');
         if (!header) return;
         
         // Get the actual content width
-        const headerWidth = header.offsetWidth;
-        const paddingBuffer = 40; // Add generous padding for rounded corners
-        const finalWidth = headerWidth + paddingBuffer;
-        
-        console.log(`[MainHeader] Measured header width: ${headerWidth}px, resizing window to: ${finalWidth}px`);
-        
-        // Resize window to fit content
+        const contentWidth = header.scrollWidth;
+        const finalWidth = contentWidth + header.offsetHeight; // Add space for rounded corners
+
         try {
             await window.api.headerController.resizeHeaderWindow({ 
                 width: finalWidth, 
@@ -487,6 +480,16 @@ export class MainHeader extends LitElement {
     connectedCallback() {
         super.connectedCallback();
         this.addEventListener('animationend', this.handleAnimationEnd);
+    
+        const header = this.shadowRoot.querySelector('.header');
+        if (header) {
+            let resizeTimeout;
+            this.resizeObserver = new ResizeObserver(() => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => this.measureAndResizeWindow(), 50);
+            });
+            this.resizeObserver.observe(header);
+        }
 
         if (window.api) {
 
@@ -501,16 +504,12 @@ export class MainHeader extends LitElement {
                     this.listenSessionStatus = 'beforeSession';
                 }
                 this.isTogglingSession = false; // ✨ 로딩 상태만 해제
-                // Resize window after status change
-                this.measureAndResizeWindow();
             };
             window.api.mainHeader.onListenChangeSessionResult(this._sessionStateTextListener);
 
             this._shortcutListener = (event, keybinds) => {
                 console.log('[MainHeader] Received updated shortcuts:', keybinds);
                 this.shortcuts = keybinds;
-                // Resize window after shortcuts change
-                this.measureAndResizeWindow();
             };
             window.api.mainHeader.onShortcutsUpdated(this._shortcutListener);
         }
@@ -520,6 +519,10 @@ export class MainHeader extends LitElement {
         super.disconnectedCallback();
         this.removeEventListener('animationend', this.handleAnimationEnd);
         
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+        }
+
         if (this.animationEndTimer) {
             clearTimeout(this.animationEndTimer);
             this.animationEndTimer = null;
@@ -538,7 +541,7 @@ export class MainHeader extends LitElement {
     showSettingsWindow(element) {
         if (this.wasJustDragged) return;
         if (window.api) {
-            console.log(`[MainHeader] showSettingsWindow called at ${Date.now()}`);
+            // console.log(`[MainHeader] showSettingsWindow called at ${Date.now()}`);
             window.api.mainHeader.showSettingsWindow();
 
         }
@@ -547,7 +550,7 @@ export class MainHeader extends LitElement {
     hideSettingsWindow() {
         if (this.wasJustDragged) return;
         if (window.api) {
-            console.log(`[MainHeader] hideSettingsWindow called at ${Date.now()}`);
+            // console.log(`[MainHeader] hideSettingsWindow called at ${Date.now()}`);
             window.api.mainHeader.hideSettingsWindow();
         }
     }

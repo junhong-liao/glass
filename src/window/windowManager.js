@@ -156,7 +156,7 @@ function setupWindowController(windowPool, layoutManager, movementManager) {
 
     internalBridge.on('window:resizeHeaderWindow', ({ width, height }) => {
         const header = windowPool.get('header');
-        if (!header || movementManager.isAnimating) return;
+        if (!header) return;
 
         const newHeaderBounds = layoutManager.calculateHeaderResize(header, { width, height });
         
