@@ -1,9 +1,9 @@
 <p align="center">
-  <a href="https://pickle.com/glass">
+  <a href="https://subliminal.ai">
    <img src="./public/assets/banner.gif" alt="Logo">
   </a>
 
-  <h1 align="center">Glass by Pickle: Digital Mind Extension 🧠</h1>
+  <h1 align="center">Subliminal AI: Digital Mind Extension 🧠</h1>
 
 </p>
 
@@ -14,7 +14,7 @@
 
 > This project is a fork of [CheatingDaddy](https://github.com/sohzm/cheating-daddy) with modifications and enhancements. Thanks to [Soham](https://x.com/soham_btw) and all the open-source contributors who made this possible!
 
-🤖 **Fast, light & open-source**—Glass lives on your desktop, sees what you see, listens in real time, understands your context, and turns every moment into structured knowledge.
+🤖 **Fast, light & open-source**—Subliminal AI lives on your desktop, sees what you see, listens in real time, understands your context, and turns every moment into structured knowledge.
 
 💬 **Proactive in meetings**—it surfaces action items, summaries, and answers the instant you need them.
 
@@ -24,7 +24,7 @@ To have fun building with us, join our [Discord](https://discord.gg/UCZH5B5Hpd)!
 
 ## Instant Launch
 
-⚡️  Skip the setup—launch instantly with our ready-to-run macOS app.  [[Download Here]](https://www.dropbox.com/scl/fi/znid09apxiwtwvxer6oc9/Glass_latest.dmg?rlkey=gwvvyb3bizkl25frhs4k1zwds&st=37q31b4w&dl=1)
+⚡️  Skip the setup—launch instantly with our ready-to-run macOS app.  [[Download Here]](https://www.dropbox.com/scl/fi/znid09apxiwtwvxer6oc9/SubliminalAI_latest.dmg?rlkey=gwvvyb3bizkl25frhs4k1zwds&st=37q31b4w&dl=1)
 
 ## Quick Start (Local Build)
 
@@ -71,7 +71,7 @@ npm run setup
 - Gemini API: Get Gemini API Key [here](https://aistudio.google.com/apikey)
 - Local LLM Ollama & Whisper
 
-### Liquid Glass Design (coming soon)
+### Liquid Interface Design (coming soon)
 
 <img width="100%" alt="booking-screen" src="./public/assets/03.gif">
 
@@ -115,7 +115,7 @@ We have a list of [help wanted](https://github.com/pickle-com/glass/issues?q=is%
 
 | Status | Issue                          | Description                                       |
 |--------|--------------------------------|---------------------------------------------------|
-| 🚧 WIP      | Liquid Glass                    | Liquid Glass UI for MacOS 26 |
+| 🚧 WIP      | Liquid Interface                | Liquid Interface UI for MacOS 26 |
 
 ### Changelog
 
@@ -126,9 +126,9 @@ We have a list of [help wanted](https://github.com/pickle-com/glass/issues?q=is%
 - Jul 8: Now support Local LLM & STT, Firebase Data Storage 
 
 
-## About Pickle
+## About Subliminal AI
 
-**Our mission is to build a living digital clone for everyone.** Glass is part of Step 1—a trusted pipeline that transforms your daily data into a scalable clone. Visit [pickle.com](https://pickle.com) to learn more.
+**Our mission is to build a living digital clone for everyone.** Subliminal AI is part of Step 1—a trusted pipeline that transforms your daily data into a scalable clone. Visit [subliminal.ai](https://subliminal.ai) to learn more.
 
 ## Star History
 [![Star History Chart](https://api.star-history.com/svg?repos=pickle-com/glass&type=Date)](https://www.star-history.com/#pickle-com/glass&Date)

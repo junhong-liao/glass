@@ -1,6 +1,6 @@
-# Contributing to Glass
+# Contributing to Subliminal AI
 
-Thank you for considering contributing to **Glass by Pickle**! Contributions make the open-source community vibrant, innovative, and collaborative. We appreciate every contribution you make—big or small.
+Thank you for considering contributing to **Subliminal AI**! Contributions make the open-source community vibrant, innovative, and collaborative. We appreciate every contribution you make—big or small.
 
 This document guides you through the entire contribution process, from finding an issue to getting your pull request merged.
 
