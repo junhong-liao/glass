@@ -534,7 +534,7 @@ export class SettingsView extends LitElement {
         // Whisper related
         this.whisperModels = [];
         this.whisperProgressTracker = null; // Will be initialized when needed
-        this.handleUseSubliminalAIKey = this.handleUseSubliminalAIKey.bind(this)
+        this.handleUseSubliminalKey = this.handleUseSubliminalKey.bind(this)
         this.autoUpdateEnabled = true;
         this.autoUpdateLoading = true;
         this.loadInitialData();
@@ -898,7 +898,7 @@ export class SettingsView extends LitElement {
     }
 
 
-    handleUseSubliminalAIKey(e) {
+    handleUseSubliminalKey(e) {
         e.preventDefault()
         if (this.wasJustDragged) return
     
@@ -1253,7 +1253,7 @@ export class SettingsView extends LitElement {
                         <div class="provider-key-group">
                             <label for="key-input-${id}">${config.name} API Key</label>
                             <input type="password" id="key-input-${id}"
-                                placeholder=${loggedIn ? "Using Subliminal AI's Key" : `Enter ${config.name} API Key`} 
+                                placeholder=${loggedIn ? "Using Subliminal's Key" : `Enter ${config.name} API Key`} 
                                 .value=${this.apiKeys[id] || ''}
                             >
                             <div class="key-buttons">
@@ -1351,7 +1351,7 @@ export class SettingsView extends LitElement {
             <div class="settings-container">
                 <div class="header-section">
                     <div>
-                        <h1 class="app-title">Subliminal AI</h1>
+                        <h1 class="app-title">Subliminal</h1>
                         <div class="account-info">
                             ${this.firebaseUser
                                 ? html`Account: ${this.firebaseUser.email || 'Logged In'}`
@@ -1445,7 +1445,7 @@ export class SettingsView extends LitElement {
                                 </button>
                                 `
                             : html`
-                                <button class="settings-button half-width" @click=${this.handleUseSubliminalAIKey}>
+                                <button class="settings-button half-width" @click=${this.handleUseSubliminalKey}>
                                     <span>Login</span>
                                 </button>
                                 `

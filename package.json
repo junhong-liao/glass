@@ -1,11 +1,11 @@
 {
-    "name": "subliminal-ai",
-    "productName": "Subliminal AI",
+    "name": "subliminal",
+    "productName": "Subliminal",
     "version": "0.2.4",
     "description": "Cl*ely for Free",
     "main": "src/index.js",
     "scripts": {
-        "setup": "npm install && cd subliminal-ai-web && npm install && npm run build && cd .. && npm start",
+        "setup": "npm install && cd subliminal-web && npm install && npm run build && cd .. && npm start",
         "start": "npm run build:renderer && electron .",
         "package": "npm run build:all && electron-builder --dir",
         "make": "npm run build:renderer && electron-forge make",
@@ -15,13 +15,13 @@
         "lint": "eslint --ext .ts,.tsx,.js .",
         "postinstall": "electron-builder install-app-deps",
         "build:renderer": "node build.js",
-        "build:web": "cd subliminal-ai-web && npm run build && cd ..",
+        "build:web": "cd subliminal-web && npm run build && cd ..",
         "build:all": "npm run build:renderer && npm run build:web",
         "watch:renderer": "node build.js --watch"
     },
     "keywords": [
-        "subliminal ai",
-        "ai assistant",
+        "subliminal",
+        "ai assistant", 
         "real-time",
         "live summary",
         "contextual ai"

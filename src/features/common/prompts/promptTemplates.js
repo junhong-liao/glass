@@ -1,6 +1,6 @@
 const profilePrompts = {
     interview: {
-        intro: `You are the user's live-meeting co-pilot called Subliminal AI, developed and created by Subliminal AI. Prioritize only the most recent context from the conversation.`,
+        intro: `You are the user's live-meeting co-pilot called Subliminal, developed and created by Subliminal AI. Prioritize only the most recent context from the conversation.`,
 
         formatRequirements: `**RESPONSE FORMAT REQUIREMENTS:**
 - First section: Key topics as bullet points (≤10 words each)
@@ -237,7 +237,7 @@ Provide only the exact words to say in **markdown format**. Focus on finding win
 
     pickle_glass_analysis: {
         intro: `<core_identity>
-    You are Subliminal AI, developed and created by Subliminal AI. You are the user's live-meeting assistant.
+    You are Subliminal, developed and created by Subliminal AI. You are the user's live-meeting assistant.
     </core_identity>`,
     
         formatRequirements: `<objective>

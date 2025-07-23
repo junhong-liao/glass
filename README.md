@@ -3,7 +3,7 @@
    <img src="./public/assets/banner.gif" alt="Logo">
   </a>
 
-  <h1 align="center">Subliminal AI: Digital Mind Extension 🧠</h1>
+  <h1 align="center">Subliminal: Digital Mind Extension 🧠</h1>
 
 </p>
 
@@ -14,7 +14,7 @@
 
 > This project is a fork of [CheatingDaddy](https://github.com/sohzm/cheating-daddy) with modifications and enhancements. Thanks to [Soham](https://x.com/soham_btw) and all the open-source contributors who made this possible!
 
-🤖 **Fast, light & open-source**—Subliminal AI lives on your desktop, sees what you see, listens in real time, understands your context, and turns every moment into structured knowledge.
+🤖 **Fast, light & open-source**—Subliminal lives on your desktop, sees what you see, listens in real time, understands your context, and turns every moment into structured knowledge.
 
 💬 **Proactive in meetings**—it surfaces action items, summaries, and answers the instant you need them.
 
@@ -24,7 +24,7 @@ To have fun building with us, join our [Discord](https://discord.gg/UCZH5B5Hpd)!
 
 ## Instant Launch
 
-⚡️  Skip the setup—launch instantly with our ready-to-run macOS app.  [[Download Here]](https://www.dropbox.com/scl/fi/znid09apxiwtwvxer6oc9/SubliminalAI_latest.dmg?rlkey=gwvvyb3bizkl25frhs4k1zwds&st=37q31b4w&dl=1)
+⚡️  Skip the setup—launch instantly with our ready-to-run macOS app.  [[Download Here]](https://www.dropbox.com/scl/fi/znid09apxiwtwvxer6oc9/Subliminal_latest.dmg?rlkey=gwvvyb3bizkl25frhs4k1zwds&st=37q31b4w&dl=1)
 
 ## Quick Start (Local Build)
 
@@ -128,7 +128,7 @@ We have a list of [help wanted](https://github.com/pickle-com/glass/issues?q=is%
 
 ## About Subliminal AI
 
-**Our mission is to build a living digital clone for everyone.** Subliminal AI is part of Step 1—a trusted pipeline that transforms your daily data into a scalable clone. Visit [usesubliminal.com](https://usesubliminal.com) to learn more.
+**Our mission is to build a living digital clone for everyone.** Subliminal is part of Step 1—a trusted pipeline that transforms your daily data into a scalable clone. Visit [usesubliminal.com](https://usesubliminal.com) to learn more.
 
 ## Star History
 [![Star History Chart](https://api.star-history.com/svg?repos=pickle-com/glass&type=Date)](https://www.star-history.com/#pickle-com/glass&Date)

@@ -231,8 +231,8 @@ const SidebarComponent = ({ isCollapsed, onToggle, onSearchClick }: SidebarProps
             {
                 href: 'hhttps://www.dropbox.com/scl/fi/znid09apxiwtwvxer6oc9/Glass_latest.dmg?rlkey=gwvvyb3bizkl25frhs4k1zwds&st=37q31b4w&dl=1',
                 icon: '/download.svg',
-                text: 'Download Subliminal AI',
-                ariaLabel: 'Download Subliminal AI (new window)',
+                text: 'Download Subliminal',
+                ariaLabel: 'Download Subliminal (new window)',
             },
         ],
         []
@@ -498,7 +498,7 @@ const SidebarComponent = ({ isCollapsed, onToggle, onSearchClick }: SidebarProps
                         <Link href="https://usesubliminal.com" target="_blank" rel="noopener noreferrer" className="flex items-center">
                             <Image
                                 src={isCollapsed ? '/symbol.svg' : '/word.svg'}
-                                alt="Subliminal AI Logo"
+                                alt="Subliminal Logo"
                                 width={50}
                                 height={14}
                                 className="mx-3 shrink-0"
@@ -543,7 +543,7 @@ const SidebarComponent = ({ isCollapsed, onToggle, onSearchClick }: SidebarProps
                 {!isCollapsed && hasApiKey !== null && (
                     <div className="px-2.5 py-2 text-center">
                         <span className={`text-xs px-2 py-1 rounded-full ${hasApiKey ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
-                            {hasApiKey ? 'Local running' : 'Subliminal AI Free System'}
+                            {hasApiKey ? 'Local running' : 'Subliminal Free System'}
                         </span>
                     </div>
                 )}
