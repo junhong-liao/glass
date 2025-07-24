@@ -92,8 +92,20 @@ export class SettingsView extends LitElement {
         .app-title {
             font-size: 13px;
             font-weight: 500;
-            color: white;
             margin: 0 0 4px 0;
+            background: linear-gradient(
+                90deg,
+                #f4f4f4,
+                #87ceef,
+                #4da6e6,
+                #d6a8f7,
+                #f4f4f4
+            );
+            background-size: 200% 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 8s linear infinite;
         }
 
         .account-info {
@@ -206,12 +218,23 @@ export class SettingsView extends LitElement {
         .settings-button.danger {
             background: rgba(255, 59, 48, 0.1);
             border-color: rgba(255, 59, 48, 0.3);
-            color: rgba(255, 59, 48, 0.9);
+            color: white;
         }
 
         .settings-button.danger:hover {
             background: rgba(255, 59, 48, 0.15);
             border-color: rgba(255, 59, 48, 0.4);
+        }
+
+        .settings-button.success {
+            background: rgba(52, 199, 89, 0.1);
+            border-color: rgba(52, 199, 89, 0.3);
+            color: white;
+        }
+
+        .settings-button.success:hover {
+            background: rgba(52, 199, 89, 0.15);
+            border-color: rgba(52, 199, 89, 0.4);
         }
 
         .move-buttons, .bottom-buttons {
@@ -367,6 +390,16 @@ export class SettingsView extends LitElement {
             margin-right: 6px;
         }
 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 200% 0%; }
+            100% { background-position: -200% 0%; }
+        }
+
         .hidden {
             display: none;
         }
@@ -505,6 +538,9 @@ export class SettingsView extends LitElement {
         installingModels: { type: Object, state: true },
         // Whisper related properties
         whisperModels: { type: Array, state: true },
+        // CLI installation properties
+        cliInstallationStatus: { type: String, state: true },
+        cliInstallationLoading: { type: Boolean, state: true },
     };
     //////// after_modelStateService ////////
 
@@ -537,6 +573,9 @@ export class SettingsView extends LitElement {
         this.handleUsePicklesKey = this.handleUsePicklesKey.bind(this)
         this.autoUpdateEnabled = true;
         this.autoUpdateLoading = true;
+        // CLI installation
+        this.cliInstallationStatus = 'not-installed';
+        this.cliInstallationLoading = false;
         this.loadInitialData();
         //////// after_modelStateService ////////
     }
@@ -556,24 +595,6 @@ export class SettingsView extends LitElement {
         this.requestUpdate();
     }
 
-    async handleToggleAutoUpdate() {
-        if (!window.api || this.autoUpdateLoading) return;
-        this.autoUpdateLoading = true;
-        this.requestUpdate();
-        try {
-            const newValue = !this.autoUpdateEnabled;
-            const result = await window.api.settingsView.setAutoUpdate(newValue);
-            if (result && result.success) {
-                this.autoUpdateEnabled = newValue;
-            } else {
-                console.error('Failed to update auto-update setting');
-            }
-        } catch (e) {
-            console.error('Error toggling auto-update:', e);
-        }
-        this.autoUpdateLoading = false;
-        this.requestUpdate();
-    }
 
     async loadLocalAIStatus() {
         try {
@@ -643,6 +664,9 @@ export class SettingsView extends LitElement {
             
             // Load LocalAI status asynchronously to improve initial load time
             this.loadLocalAIStatus();
+            
+            // Load CLI installation status
+            this.loadCLIInstallationStatus();
         } catch (error) {
             console.error('Error loading initial settings data:', error);
         } finally {
@@ -1094,15 +1118,6 @@ export class SettingsView extends LitElement {
         console.log('Selected preset:', preset);
     }
 
-    handleMoveLeft() {
-        console.log('Move Left clicked');
-        window.api.settingsView.moveWindowStep('left');
-    }
-
-    handleMoveRight() {
-        console.log('Move Right clicked');
-        window.api.settingsView.moveWindowStep('right');
-    }
 
     async handlePersonalize() {
         console.log('Personalize clicked');
@@ -1173,6 +1188,57 @@ export class SettingsView extends LitElement {
             console.error('[SettingsView] Error during Ollama shutdown:', error);
             // Restore previous state on error
             await this.refreshOllamaStatus();
+        }
+    }
+
+    async loadCLIInstallationStatus() {
+        try {
+            const status = await window.api.settingsView.checkCLIInstallationStatus();
+            this.cliInstallationStatus = status;
+            this.requestUpdate();
+        } catch (error) {
+            console.error('Error loading CLI installation status:', error);
+            this.cliInstallationStatus = 'error';
+        }
+    }
+
+    async handleCLIInstallation() {
+        if (this.cliInstallationLoading) return;
+        
+        console.log('[SettingsView] CLI installation clicked, current status:', this.cliInstallationStatus);
+        
+        try {
+            this.cliInstallationLoading = true;
+            this.requestUpdate();
+
+            if (this.cliInstallationStatus === 'installed') {
+                // Uninstall
+                const result = await window.api.settingsView.uninstallCLI();
+                if (result.success) {
+                    this.cliInstallationStatus = 'not-installed';
+                    console.log('[SettingsView] CLI uninstalled successfully');
+                } else {
+                    console.error('[SettingsView] CLI uninstallation failed:', result.error);
+                    alert(`Failed to uninstall CLI command: ${result.error}`);
+                }
+            } else {
+                // Install
+                const result = await window.api.settingsView.installCLI();
+                if (result.success) {
+                    this.cliInstallationStatus = 'installed';
+                    console.log('[SettingsView] CLI installed successfully');
+                    alert('CLI command installed! You can now type "subliminal" in terminal to launch the app.');
+                } else {
+                    console.error('[SettingsView] CLI installation failed:', result.error);
+                    alert(`Failed to install CLI command: ${result.error}`);
+                }
+            }
+        } catch (error) {
+            console.error('[SettingsView] Error during CLI installation:', error);
+            alert(`CLI installation error: ${error.message}`);
+        } finally {
+            this.cliInstallationLoading = false;
+            this.requestUpdate();
         }
     }
 
@@ -1258,7 +1324,7 @@ export class SettingsView extends LitElement {
                             >
                             <div class="key-buttons">
                                <button class="settings-button" @click=${() => this.handleSaveKey(id)} >Save</button>
-                               <button class="settings-button danger" @click=${() => this.handleClearKey(id)} }>Clear</button>
+                               <button class="settings-button" @click=${() => this.handleClearKey(id)} }>Clear</button>
                             </div>
                         </div>
                         `;
@@ -1351,11 +1417,11 @@ export class SettingsView extends LitElement {
             <div class="settings-container">
                 <div class="header-section">
                     <div>
-                        <h1 class="app-title">Pickle Glass</h1>
+                        <h1 class="app-title">Subliminal AI</h1>
                         <div class="account-info">
                             ${this.firebaseUser
                                 ? html`Account: ${this.firebaseUser.email || 'Logged In'}`
-                                : `Account: Not Logged In`
+                                : `Incognito` // Changed from Account: 'Not Logged In'
                             }
                         </div>
                     </div>
@@ -1418,20 +1484,14 @@ export class SettingsView extends LitElement {
 
                 <div class="buttons-section">
                     <button class="settings-button full-width" @click=${this.handlePersonalize}>
-                        <span>Personalize / Meeting Notes</span>
-                    </button>
-                    <button class="settings-button full-width" @click=${this.handleToggleAutoUpdate} ?disabled=${this.autoUpdateLoading}>
-                        <span>Automatic Updates: ${this.autoUpdateEnabled ? 'On' : 'Off'}</span>
+                        <span>Memories</span>
                     </button>
                     
-                    <div class="move-buttons">
-                        <button class="settings-button half-width" @click=${this.handleMoveLeft}>
-                            <span>← Move</span>
-                        </button>
-                        <button class="settings-button half-width" @click=${this.handleMoveRight}>
-                            <span>Move →</span>
-                        </button>
-                    </div>
+                    <button class="settings-button full-width" @click=${this.handleCLIInstallation} ?disabled=${this.cliInstallationLoading}>
+                        <span>${this.cliInstallationLoading ? 'Installing...' : 
+                               this.cliInstallationStatus === 'installed' ? 'Uninstall CLI Command' : 
+                               'Install CLI Command'}</span>
+                    </button>
                     
                     <button class="settings-button full-width" @click=${this.handleToggleInvisibility}>
                         <span>${this.isContentProtectionOn ? 'Disable Invisibility' : 'Enable Invisibility'}</span>
@@ -1445,7 +1505,7 @@ export class SettingsView extends LitElement {
                                 </button>
                                 `
                             : html`
-                                <button class="settings-button half-width" @click=${this.handleUsePicklesKey}>
+                                <button class="settings-button half-width success" @click=${this.handleUsePicklesKey}>
                                     <span>Login</span>
                                 </button>
                                 `

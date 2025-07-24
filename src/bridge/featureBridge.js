@@ -12,6 +12,7 @@ const askService = require('../features/ask/askService');
 const listenService = require('../features/listen/listenService');
 const permissionService = require('../features/common/services/permissionService');
 const encryptionService = require('../features/common/services/encryptionService');
+const CLIInstallationService = require('../features/cli/cliInstallationService');
 
 module.exports = {
   // Renderer로부터의 요청을 수신하고 서비스로 전달
@@ -35,6 +36,12 @@ module.exports = {
     ipcMain.handle('shortcut:openShortcutSettingsWindow', async () => await shortcutsService.openShortcutSettingsWindow());
     ipcMain.handle('shortcut:saveShortcuts', async (event, newKeybinds) => await shortcutsService.handleSaveShortcuts(newKeybinds));
     ipcMain.handle('shortcut:toggleAllWindowsVisibility', async () => await shortcutsService.toggleAllWindowsVisibility());
+
+    // CLI Installation
+    const cliService = new CLIInstallationService();
+    ipcMain.handle('cli:check-installation-status', async () => await cliService.checkInstallationStatus());
+    ipcMain.handle('cli:install', async () => await cliService.installCLI());
+    ipcMain.handle('cli:uninstall', async () => await cliService.uninstallCLI());
 
     // Permissions
     ipcMain.handle('check-system-permissions', async () => await permissionService.checkSystemPermissions());

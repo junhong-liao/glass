@@ -6,6 +6,7 @@ const os = require('os');
 const shortcutsService = require('../features/shortcuts/shortcutsService');
 const internalBridge = require('../bridge/internalBridge');
 const permissionRepository = require('../features/common/repositories/permission');
+const config = require('../features/common/config/config');
 
 /* ────────────────[ GLASS BYPASS ]─────────────── */
 let liquidGlass;
@@ -36,6 +37,9 @@ const windowPool = new Map();
 
 let settingsHideTimer = null;
 
+const shouldOpenDevTools = () => {
+    return !app.isPackaged && config.get('devtoolsEnabled');
+};
 
 let layoutManager = null;
 let movementManager = null;
@@ -482,7 +486,7 @@ function createFeatureWindows(header, namesToCreate) {
                         }
                     });
                 }
-                if (!app.isPackaged) {
+                if (shouldOpenDevTools()) {
                     listen.webContents.openDevTools({ mode: 'detach' });
                 }
                 windowPool.set('listen', listen);
@@ -515,7 +519,7 @@ function createFeatureWindows(header, namesToCreate) {
                 }
                 
                 // Open DevTools in development
-                if (!app.isPackaged) {
+                if (shouldOpenDevTools()) {
                     ask.webContents.openDevTools({ mode: 'detach' });
                 }
                 windowPool.set('ask', ask);
@@ -550,7 +554,7 @@ function createFeatureWindows(header, namesToCreate) {
                 }
                 windowPool.set('settings', settings);  
 
-                if (!app.isPackaged) {
+                if (shouldOpenDevTools()) {
                     settings.webContents.openDevTools({ mode: 'detach' });
                 }
                 break;
@@ -588,7 +592,7 @@ function createFeatureWindows(header, namesToCreate) {
                 }
 
                 windowPool.set('shortcut-settings', shortcutEditor);
-                if (!app.isPackaged) {
+                if (shouldOpenDevTools()) {
                     shortcutEditor.webContents.openDevTools({ mode: 'detach' });
                 }
                 break;
@@ -723,7 +727,7 @@ function createWindows() {
     header.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
     
     // Open DevTools in development
-    if (!app.isPackaged) {
+    if (shouldOpenDevTools()) {
         header.webContents.openDevTools({ mode: 'detach' });
     }
 

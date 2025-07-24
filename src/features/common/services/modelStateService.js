@@ -101,6 +101,11 @@ class ModelStateService extends EventEmitter {
         });
     }
 
+    isFirebaseVirtualKey(key) {
+        // Firebase virtual keys are UUID-like strings, not API keys
+        return key && typeof key === 'string' && !key.startsWith('sk-') && key.length > 20;
+    }
+
     async handleLocalAIStateChange(service, state) {
         console.log(`[ModelStateService] LocalAI state changed: ${service}`, state);
         if (!state.installed || !state.running) {
@@ -148,12 +153,32 @@ class ModelStateService extends EventEmitter {
             if (!isCurrentModelValid) {
                 console.log(`[ModelStateService] No valid ${type.toUpperCase()} model selected or selection forced. Finding an alternative...`);
                 const availableModels = await this.getAvailableModels(type);
+                console.log(`[DEBUG] Available ${type} models:`, availableModels.map(m => `${m.id} (${this.getProviderForModel(m.id, type)})`));
                 if (availableModels.length > 0) {
+                    let preferredModel;
+                    
+                    if (type === 'llm') {
+                        // For LLM: Prioritize OpenAI models first
+                        preferredModel = availableModels.find(model => {
+                            const provider = this.getProviderForModel(model.id, type);
+                            return provider === 'openai';
+                        });
+                    } else if (type === 'stt') {
+                        // For STT: Prioritize Deepgram (Nova) first
+                        preferredModel = availableModels.find(model => {
+                            const provider = this.getProviderForModel(model.id, type);
+                            return provider === 'deepgram';
+                        });
+                    }
+                    
+                    // Fallback to any API model (not local)
                     const apiModel = availableModels.find(model => {
                         const provider = this.getProviderForModel(model.id, type);
                         return provider && provider !== 'ollama' && provider !== 'whisper';
                     });
-                    const newModel = apiModel || availableModels[0];
+                    
+                    const newModel = preferredModel || apiModel || availableModels[0];
+                    console.log(`[DEBUG] Selection priority: preferred=${preferredModel?.id}, api=${apiModel?.id}, selected=${newModel.id}`);
                     await this.setSelectedModel(type, newModel.id);
                     console.log(`[ModelStateService] Auto-selected ${type.toUpperCase()} model: ${newModel.id}`);
                 } else {
@@ -169,33 +194,33 @@ class ModelStateService extends EventEmitter {
     async setFirebaseVirtualKey(virtualKey) {
         console.log(`[ModelStateService] Setting Firebase virtual key.`);
 
-        // 키를 설정하기 전에, 이전에 openai-glass 키가 있었는지 확인합니다.
-        const previousSettings = await providerSettingsRepository.getByProvider('openai-glass');
+        // 키를 설정하기 전에, 이전에 openai 키가 있었는지 확인합니다.
+        const previousSettings = await providerSettingsRepository.getByProvider('openai');
         const wasPreviouslyConfigured = !!previousSettings?.api_key;
 
         // 항상 새로운 가상 키로 업데이트합니다.
-        await this.setApiKey('openai-glass', virtualKey);
+        await this.setApiKey('openai', virtualKey);
 
         if (virtualKey) {
             // 이전에 설정된 적이 없는 경우 (최초 로그인)에만 모델을 강제로 변경합니다.
             if (!wasPreviouslyConfigured) {
-                console.log('[ModelStateService] First-time setup for openai-glass, setting default models.');
-                const llmModel = PROVIDERS['openai-glass']?.llmModels[0];
-                const sttModel = PROVIDERS['openai-glass']?.sttModels[0];
+                console.log('[ModelStateService] First-time setup for openai, setting default models.');
+                const llmModel = PROVIDERS['openai']?.llmModels[0];
+                const sttModel = PROVIDERS['openai']?.sttModels[0];
                 if (llmModel) await this.setSelectedModel('llm', llmModel.id);
                 if (sttModel) await this.setSelectedModel('stt', sttModel.id);
             } else {
-                console.log('[ModelStateService] openai-glass key updated, but respecting user\'s existing model selection.');
+                console.log('[ModelStateService] openai key updated, but respecting user\'s existing model selection.');
             }
         } else {
-            // 로그아웃 시, 현재 활성화된 모델이 openai-glass인 경우에만 다른 모델로 전환합니다.
+            // 로그아웃 시, 현재 활성화된 모델이 openai인 경우에만 다른 모델로 전환합니다.
             const selected = await this.getSelectedModels();
             const llmProvider = this.getProviderForModel(selected.llm, 'llm');
             const sttProvider = this.getProviderForModel(selected.stt, 'stt');
             
             const typesToReselect = [];
-            if (llmProvider === 'openai-glass') typesToReselect.push('llm');
-            if (sttProvider === 'openai-glass') typesToReselect.push('stt');
+            if (llmProvider === 'openai') typesToReselect.push('llm');
+            if (sttProvider === 'openai') typesToReselect.push('stt');
 
             if (typesToReselect.length > 0) {
                 console.log('[ModelStateService] Logged out, re-selecting models for:', typesToReselect.join(', '));
@@ -210,8 +235,10 @@ class ModelStateService extends EventEmitter {
             throw new Error('Provider is required');
         }
 
-        // 'openai-glass'는 자체 인증 키를 사용하므로 유효성 검사를 건너뜁니다.
-        if (provider !== 'openai-glass') {
+        // Firebase virtual keys for openai are already validated, skip validation
+        if (provider === 'openai' && this.isFirebaseVirtualKey(key)) {
+            // Skip validation for Firebase virtual keys
+        } else {
             const validationResult = await this.validateApiKey(provider, key);
             if (!validationResult.success) {
                 console.warn(`[ModelStateService] API key validation failed for ${provider}: ${validationResult.error}`);
@@ -235,9 +262,7 @@ class ModelStateService extends EventEmitter {
         const allSettings = await providerSettingsRepository.getAll();
         const apiKeys = {};
         allSettings.forEach(s => {
-            if (s.provider !== 'openai-glass') {
-                apiKeys[s.provider] = s.api_key;
-            }
+            apiKeys[s.provider] = s.api_key;
         });
         return apiKeys;
     }
@@ -311,15 +336,23 @@ class ModelStateService extends EventEmitter {
         }
 
         const existingSettings = await providerSettingsRepository.getByProvider(provider) || {};
-        const newSettings = { ...existingSettings };
+        
+        // Only include settings that upsert should handle, not active flags
+        const settingsToUpsert = {
+            api_key: existingSettings.api_key,
+            selected_llm_model: existingSettings.selected_llm_model,
+            selected_stt_model: existingSettings.selected_stt_model,
+            created_at: existingSettings.created_at,
+            updated_at: Date.now()
+        };
 
         if (type === 'llm') {
-            newSettings.selected_llm_model = modelId;
+            settingsToUpsert.selected_llm_model = modelId;
         } else {
-            newSettings.selected_stt_model = modelId;
+            settingsToUpsert.selected_stt_model = modelId;
         }
         
-        await providerSettingsRepository.upsert(provider, newSettings);
+        await providerSettingsRepository.upsert(provider, settingsToUpsert);
         await providerSettingsRepository.setActiveProvider(provider, type);
         
         console.log(`[ModelStateService] Selected ${type} model: ${modelId} (provider: ${provider})`);
@@ -340,6 +373,7 @@ class ModelStateService extends EventEmitter {
 
         for (const setting of allSettings) {
             if (!setting.api_key) continue;
+            console.log(`[DEBUG] Provider ${setting.provider} has API key: ${setting.api_key?.substring(0, 10)}...`);
 
             const providerId = setting.provider;
             if (providerId === 'ollama' && type === 'llm') {

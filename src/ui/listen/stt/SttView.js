@@ -211,7 +211,7 @@ export class SttView extends LitElement {
         return html`
             <div class="transcription-container">
                 ${this.sttMessages.length === 0
-                    ? html`<div class="empty-state">Waiting for speech...</div>`
+                    ? html`<div class="empty-state">Use headphones for best results</div>`
                     : this.sttMessages.map(msg => html`
                         <div class="stt-message ${this.getSpeakerClass(msg.speaker)}">
                             ${msg.text}
