@@ -578,24 +578,6 @@ export class SettingsView extends LitElement {
         this.requestUpdate();
     }
 
-    async handleToggleAutoUpdate() {
-        if (!window.api || this.autoUpdateLoading) return;
-        this.autoUpdateLoading = true;
-        this.requestUpdate();
-        try {
-            const newValue = !this.autoUpdateEnabled;
-            const result = await window.api.settingsView.setAutoUpdate(newValue);
-            if (result && result.success) {
-                this.autoUpdateEnabled = newValue;
-            } else {
-                console.error('Failed to update auto-update setting');
-            }
-        } catch (e) {
-            console.error('Error toggling auto-update:', e);
-        }
-        this.autoUpdateLoading = false;
-        this.requestUpdate();
-    }
 
     async loadLocalAIStatus() {
         try {
@@ -1116,15 +1098,6 @@ export class SettingsView extends LitElement {
         console.log('Selected preset:', preset);
     }
 
-    handleMoveLeft() {
-        console.log('Move Left clicked');
-        window.api.settingsView.moveWindowStep('left');
-    }
-
-    handleMoveRight() {
-        console.log('Move Right clicked');
-        window.api.settingsView.moveWindowStep('right');
-    }
 
     async handlePersonalize() {
         console.log('Personalize clicked');
@@ -1442,18 +1415,7 @@ export class SettingsView extends LitElement {
                     <button class="settings-button full-width" @click=${this.handlePersonalize}>
                         <span>Personalize / Meeting Notes</span>
                     </button>
-                    <button class="settings-button full-width" @click=${this.handleToggleAutoUpdate} ?disabled=${this.autoUpdateLoading}>
-                        <span>Automatic Updates: ${this.autoUpdateEnabled ? 'On' : 'Off'}</span>
-                    </button>
                     
-                    <div class="move-buttons">
-                        <button class="settings-button half-width" @click=${this.handleMoveLeft}>
-                            <span>← Move</span>
-                        </button>
-                        <button class="settings-button half-width" @click=${this.handleMoveRight}>
-                            <span>Move →</span>
-                        </button>
-                    </div>
                     
                     <button class="settings-button full-width" @click=${this.handleToggleInvisibility}>
                         <span>${this.isContentProtectionOn ? 'Disable Invisibility' : 'Enable Invisibility'}</span>
