@@ -218,7 +218,7 @@ export class SettingsView extends LitElement {
         .settings-button.danger {
             background: rgba(255, 59, 48, 0.1);
             border-color: rgba(255, 59, 48, 0.3);
-            color: rgba(255, 59, 48, 0.9);
+            color: white;
         }
 
         .settings-button.danger:hover {
@@ -1253,7 +1253,7 @@ export class SettingsView extends LitElement {
                             >
                             <div class="key-buttons">
                                <button class="settings-button" @click=${() => this.handleSaveKey(id)} >Save</button>
-                               <button class="settings-button danger" @click=${() => this.handleClearKey(id)} }>Clear</button>
+                               <button class="settings-button" @click=${() => this.handleClearKey(id)} }>Clear</button>
                             </div>
                         </div>
                         `;
