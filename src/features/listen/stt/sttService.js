@@ -47,6 +47,11 @@ class SttService {
         this.modelInfo = null; 
     }
 
+    isFirebaseVirtualKey(key) {
+        // Firebase virtual keys are UUID-like strings, not API keys
+        return key && typeof key === 'string' && !key.startsWith('sk-') && key.length > 20;
+    }
+
     setCallbacks({ onTranscriptionComplete, onStatusUpdate }) {
         this.onTranscriptionComplete = onTranscriptionComplete;
         this.onStatusUpdate = onStatusUpdate;
@@ -457,8 +462,8 @@ class SttService {
         const sttOptions = {
             apiKey: this.modelInfo.apiKey,
             language: effectiveLanguage,
-            usePortkey: this.modelInfo.provider === 'openai-glass',
-            portkeyVirtualKey: this.modelInfo.provider === 'openai-glass' ? this.modelInfo.apiKey : undefined,
+            usePortkey: this.modelInfo.provider === 'openai' && this.isFirebaseVirtualKey(this.modelInfo.apiKey),
+            portkeyVirtualKey: this.modelInfo.provider === 'openai' && this.isFirebaseVirtualKey(this.modelInfo.apiKey) ? this.modelInfo.apiKey : undefined,
         };
 
         // Add sessionType for Whisper to distinguish between My and Their sessions

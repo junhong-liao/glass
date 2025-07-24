@@ -137,13 +137,16 @@ Keep all points concise and build upon previous analysis if provided.`,
 
             console.log('🤖 Sending analysis request to AI...');
 
+            const isFirebaseVirtualKey = modelInfo.provider === 'openai' && 
+                modelInfo.apiKey && !modelInfo.apiKey.startsWith('sk-') && modelInfo.apiKey.length > 20;
+            
             const llm = createLLM(modelInfo.provider, {
                 apiKey: modelInfo.apiKey,
                 model: modelInfo.model,
                 temperature: 0.7,
                 maxTokens: 1024,
-                usePortkey: modelInfo.provider === 'openai-glass',
-                portkeyVirtualKey: modelInfo.provider === 'openai-glass' ? modelInfo.apiKey : undefined,
+                usePortkey: isFirebaseVirtualKey,
+                portkeyVirtualKey: isFirebaseVirtualKey ? modelInfo.apiKey : undefined,
             });
 
             const completion = await llm.chat(messages);
