@@ -226,6 +226,17 @@ export class SettingsView extends LitElement {
             border-color: rgba(255, 59, 48, 0.4);
         }
 
+        .settings-button.success {
+            background: rgba(52, 199, 89, 0.1);
+            border-color: rgba(52, 199, 89, 0.3);
+            color: white;
+        }
+
+        .settings-button.success:hover {
+            background: rgba(52, 199, 89, 0.15);
+            border-color: rgba(52, 199, 89, 0.4);
+        }
+
         .move-buttons, .bottom-buttons {
             display: flex;
             gap: 4px;
@@ -1494,7 +1505,7 @@ export class SettingsView extends LitElement {
                                 </button>
                                 `
                             : html`
-                                <button class="settings-button half-width" @click=${this.handleUsePicklesKey}>
+                                <button class="settings-button half-width success" @click=${this.handleUsePicklesKey}>
                                     <span>Login</span>
                                 </button>
                                 `
