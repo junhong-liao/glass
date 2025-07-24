@@ -92,8 +92,20 @@ export class SettingsView extends LitElement {
         .app-title {
             font-size: 13px;
             font-weight: 500;
-            color: white;
             margin: 0 0 4px 0;
+            background: linear-gradient(
+                90deg,
+                #f4f4f4,
+                #87ceef,
+                #4da6e6,
+                #d6a8f7,
+                #f4f4f4
+            );
+            background-size: 200% 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 8s linear infinite;
         }
 
         .account-info {
@@ -365,6 +377,16 @@ export class SettingsView extends LitElement {
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-right: 6px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 200% 0%; }
+            100% { background-position: -200% 0%; }
         }
 
         .hidden {
