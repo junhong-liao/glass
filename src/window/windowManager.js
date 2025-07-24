@@ -6,6 +6,7 @@ const os = require('os');
 const shortcutsService = require('../features/shortcuts/shortcutsService');
 const internalBridge = require('../bridge/internalBridge');
 const permissionRepository = require('../features/common/repositories/permission');
+const config = require('../features/common/config/config');
 
 /* ────────────────[ LIQUID INTERFACE ]─────────────── */
 let liquidInterface;
@@ -482,7 +483,7 @@ function createFeatureWindows(header, namesToCreate) {
                         }
                     });
                 }
-                if (!app.isPackaged) {
+                if (!app.isPackaged && config.get('devtoolsEnabled')) {
                     listen.webContents.openDevTools({ mode: 'detach' });
                 }
                 windowPool.set('listen', listen);
@@ -515,7 +516,7 @@ function createFeatureWindows(header, namesToCreate) {
                 }
                 
                 // Open DevTools in development
-                if (!app.isPackaged) {
+                if (!app.isPackaged && config.get('devtoolsEnabled')) {
                     ask.webContents.openDevTools({ mode: 'detach' });
                 }
                 windowPool.set('ask', ask);
@@ -550,7 +551,7 @@ function createFeatureWindows(header, namesToCreate) {
                 }
                 windowPool.set('settings', settings);  
 
-                if (!app.isPackaged) {
+                if (!app.isPackaged && config.get('devtoolsEnabled')) {
                     settings.webContents.openDevTools({ mode: 'detach' });
                 }
                 break;
@@ -588,7 +589,7 @@ function createFeatureWindows(header, namesToCreate) {
                 }
 
                 windowPool.set('shortcut-settings', shortcutEditor);
-                if (!app.isPackaged) {
+                if (!app.isPackaged && config.get('devtoolsEnabled')) {
                     shortcutEditor.webContents.openDevTools({ mode: 'detach' });
                 }
                 break;
@@ -723,7 +724,7 @@ function createWindows() {
     header.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
     
     // Open DevTools in development
-    if (!app.isPackaged) {
+    if (!app.isPackaged && config.get('devtoolsEnabled')) {
         header.webContents.openDevTools({ mode: 'detach' });
     }
 

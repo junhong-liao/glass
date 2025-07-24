@@ -29,7 +29,9 @@ class Config {
             enableSQLiteStorage: true,
             
             logLevel: 'info',
-            enableDebugLogging: false
+            enableDebugLogging: false,
+            
+            devtoolsEnabled: false
         };
         
         this.config = { ...this.defaults };
@@ -66,6 +68,10 @@ class Config {
         
         if (process.env.SUBLIMINAL_DEBUG) {
             this.config.enableDebugLogging = process.env.SUBLIMINAL_DEBUG === 'true';
+        }
+        
+        if (process.env.SUBLIMINAL_DEVTOOLS) {
+            this.config.devtoolsEnabled = process.env.SUBLIMINAL_DEVTOOLS === 'true';
         }
         
         if (this.env === 'production') {
