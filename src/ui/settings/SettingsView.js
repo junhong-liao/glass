@@ -1421,7 +1421,7 @@ export class SettingsView extends LitElement {
                         <div class="account-info">
                             ${this.firebaseUser
                                 ? html`Account: ${this.firebaseUser.email || 'Logged In'}`
-                                : `Account: Not Logged In`
+                                : `Incognito` // Changed from Account: 'Not Logged In'
                             }
                         </div>
                     </div>
@@ -1484,7 +1484,7 @@ export class SettingsView extends LitElement {
 
                 <div class="buttons-section">
                     <button class="settings-button full-width" @click=${this.handlePersonalize}>
-                        <span>Personalize / Meeting Notes</span>
+                        <span>Memories</span>
                     </button>
                     
                     <button class="settings-button full-width" @click=${this.handleCLIInstallation} ?disabled=${this.cliInstallationLoading}>
