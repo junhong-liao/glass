@@ -629,8 +629,8 @@ export class ListenView extends LitElement {
                 ? 'Copy Transcript'
                 : 'Copy Glass Analysis'
             : this.viewMode === 'insights'
-            ? `Live insights`
-            : `Glass is Listening ${this.elapsedTime}`;
+            ? `Live Insights`
+            : `Subliminal is Listening... ${this.elapsedTime}`;
 
         return html`
             <div class="assistant-container">
