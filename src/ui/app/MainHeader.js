@@ -93,7 +93,7 @@ export class MainHeader extends LitElement {
             height: 26px;
             padding: var(--button-internal-padding);
             background: transparent;
-            border-radius: 9000px;
+            border-radius: 6px;
             justify-content: center;
             align-items: center;
             gap: 6px;
@@ -118,32 +118,21 @@ export class MainHeader extends LitElement {
 
 
         .listen-button:hover::before {
-            background: rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .listen-button::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255, 255, 255, 0.14);
-            border-radius: 9000px;
+            background: transparent;
+            border-radius: 6px;
             z-index: -1;
             transition: background 0.15s ease;
         }
 
         .listen-button::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 9000px;
-            padding: 1px;
-            background: linear-gradient(169deg, rgba(255, 255, 255, 0.17) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.17) 100%);
-            -webkit-mask:
-                linear-gradient(#fff 0 0) content-box,
-                linear-gradient(#fff 0 0);
-            -webkit-mask-composite: destination-out;
-            mask-composite: exclude;
-            pointer-events: none;
+            display: none;
         }
 
 
