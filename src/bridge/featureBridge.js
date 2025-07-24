@@ -14,6 +14,10 @@ const permissionService = require('../features/common/services/permissionService
 const encryptionService = require('../features/common/services/encryptionService');
 const sessionRepository = require('../features/common/repositories/session');
 const askRepository = require('../features/ask/repositories');
+const CrossSessionMemoryService = require('../features/common/services/crossSessionMemoryService');
+
+// Initialize cross-session memory service
+const crossSessionMemoryService = new CrossSessionMemoryService(askRepository);
 
 // Helper function to format database messages for conversation history
 function formatMessagesForConversationHistory(messages) {
@@ -70,7 +74,7 @@ module.exports = {
        
     // General
     ipcMain.handle('get-preset-templates', () => presetRepository.getPresetTemplates());
-    ipcMain.handle('get-web-url', () => process.env.pickleglass_WEB_URL || 'http://localhost:3000');
+    ipcMain.handle('get-web-url', () => process.env.SUBLIMINAL_WEB_URL || 'http://localhost:3000');
 
     // Ollama
     ipcMain.handle('ollama:get-status', async () => await ollamaService.handleGetStatus());
@@ -89,14 +93,20 @@ module.exports = {
     // Ask
     ipcMain.handle('ask:sendQuestionFromAsk', async (event, userPrompt) => {
         const sessionId = await sessionRepository.getOrCreateActive('ask');
-        const messages = await askRepository.getAllAiMessagesBySessionId(sessionId);
-        const conversationHistory = formatMessagesForConversationHistory(messages);
+        const currentSessionMessages = await askRepository.getAllAiMessagesBySessionId(sessionId);
+        const messagesWithMemory = await crossSessionMemoryService.buildConversationWithMemory(currentSessionMessages, sessionId);
+        const conversationHistory = formatMessagesForConversationHistory(messagesWithMemory);
+        
+        console.log(`[Debug] Conversation history (${conversationHistory.length} items):`, 
+            conversationHistory.slice(0, 3).map(msg => msg.substring(0, 100) + '...'));
+        
         return await askService.sendMessage(userPrompt, conversationHistory);
     });
     ipcMain.handle('ask:sendQuestionFromSummary', async (event, userPrompt) => {
         const sessionId = await sessionRepository.getOrCreateActive('ask');
-        const messages = await askRepository.getAllAiMessagesBySessionId(sessionId);
-        const conversationHistory = formatMessagesForConversationHistory(messages);
+        const currentSessionMessages = await askRepository.getAllAiMessagesBySessionId(sessionId);
+        const messagesWithMemory = await crossSessionMemoryService.buildConversationWithMemory(currentSessionMessages, sessionId);
+        const conversationHistory = formatMessagesForConversationHistory(messagesWithMemory);
         return await askService.sendMessage(userPrompt, conversationHistory);
     });
     ipcMain.handle('ask:toggleAskButton', async () => await askService.toggleAskButton());

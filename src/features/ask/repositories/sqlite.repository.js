@@ -22,7 +22,40 @@ function getAllAiMessagesBySessionId(sessionId) {
     return db.prepare(query).all(sessionId);
 }
 
+function getAllRecentMessagesByUserId(uid, limit = 50, excludeSessionId) {
+    const db = sqliteClient.getDb();
+    const query = `
+        SELECT am.* FROM ai_messages am
+        JOIN sessions s ON am.session_id = s.id
+        WHERE s.uid = ? 
+          AND s.ended_at IS NOT NULL
+          AND am.session_id != COALESCE(?, '')
+          AND length(am.content) > 10
+          AND lower(am.content) NOT LIKE '%i don''t know%'
+          AND lower(am.content) NOT LIKE '%i don''t have%'
+          AND lower(am.content) NOT LIKE '%i''m not sure%'
+          AND lower(am.content) NOT LIKE '%i''m sorry%'
+          AND lower(am.content) NOT LIKE '%i''m unable%'
+          AND lower(am.content) NOT LIKE '%i cannot%'
+          AND lower(am.content) NOT LIKE '%i can''t%'
+          AND lower(am.content) NOT LIKE '%unfortunately%'
+          AND lower(am.content) NOT LIKE '%i''m afraid%'
+        ORDER BY length(am.content) DESC, am.sent_at ASC
+        LIMIT ?
+    `;
+    
+    try {
+        const messages = db.prepare(query).all(uid, excludeSessionId || '', limit);
+        console.log(`[SQLite] getAllRecentMessagesByUserId: Found ${messages.length} messages for user ${uid}`);
+        return messages;
+    } catch (err) {
+        console.error('[SQLite] Error in getAllRecentMessagesByUserId:', err);
+        return [];
+    }
+}
+
 module.exports = {
     addAiMessage,
-    getAllAiMessagesBySessionId
+    getAllAiMessagesBySessionId,
+    getAllRecentMessagesByUserId
 }; 

@@ -207,7 +207,8 @@ class AskService {
         if (!conversationTexts || conversationTexts.length === 0) {
             return 'No conversation history available.';
         }
-        return conversationTexts.slice(-30).join('\n');
+        // Let CrossSessionMemoryService enforce limits - don't double-limit here
+        return conversationTexts.join('\n');
     }
 
     /**
@@ -254,7 +255,11 @@ class AskService {
 
             const conversationHistory = this._formatConversationForPrompt(conversationHistoryRaw);
 
-            const systemPrompt = getSystemPrompt('subliminal_analysis', conversationHistory, false);
+            const conversationHistoryText = Array.isArray(conversationHistory) ? conversationHistory.join('\n') : conversationHistory;
+            const systemPrompt = getSystemPrompt('subliminal_analysis', conversationHistoryText, false);
+            
+            console.log('[Debug] Conversation history text preview:', conversationHistoryText.substring(0, 200) + '...');
+            console.log('[Debug] System prompt includes conversation:', systemPrompt.includes('conversation history') ? 'YES' : 'NO');
 
             const messages = [
                 { role: 'system', content: systemPrompt },

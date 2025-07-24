@@ -7,7 +7,15 @@ function buildSystemPrompt(promptParts, customPrompt = '', googleSearchEnabled =
         sections.push('\n\n', promptParts.searchUsage);
     }
 
-    sections.push('\n\n', promptParts.content, '\n\nUser-provided context\n-----\n', customPrompt, '\n-----\n\n', promptParts.outputInstructions);
+    // Replace {{CONVERSATION_HISTORY}} placeholder with actual conversation history
+    let content = promptParts.content;
+    if (content.includes('{{CONVERSATION_HISTORY}}')) {
+        content = content.replace('{{CONVERSATION_HISTORY}}', customPrompt || 'No conversation history available.');
+        sections.push('\n\n', content, '\n\n', promptParts.outputInstructions);
+    } else {
+        // Fallback to old behavior for other templates
+        sections.push('\n\n', content, '\n\nUser-provided context\n-----\n', customPrompt, '\n-----\n\n', promptParts.outputInstructions);
+    }
 
     return sections.join('');
 }

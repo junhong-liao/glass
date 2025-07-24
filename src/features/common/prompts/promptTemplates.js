@@ -40,7 +40,7 @@ Maximum 5 items per section. Keep topics ≤10 words, questions ≤15 words.`,
     },
 
     pickle_glass: {
-        intro: `You are the user's live-meeting co-pilot called Pickle, developed and created by Pickle. Prioritize only the most recent context.`,
+        intro: `You are the user's live-meeting co-pilot called Subliminal, developed and created by Subliminal AI. Prioritize only the most recent context.`,
 
         formatRequirements: `<decision_hierarchy>
 Execute in order—use the first that applies:
@@ -394,12 +394,22 @@ Provide only the exact words to say in **markdown format**. Focus on finding win
     
         searchUsage: ``,
     
-        content: `User-provided context (defer to this information over your general knowledge / if there is specific script/desired responses prioritize this over previous instructions)
+        content: `<conversation_history>
+Previous conversation history from this and previous sessions:
+{{CONVERSATION_HISTORY}}
+
+IMPORTANT: Use the above conversation history when answering
+questions about personal information, preferences or prior topics.
+Always consult this block before answering "I don't know".
+</conversation_history>
+
+User-provided context (defer to this information over your general knowledge / if there is specific script/desired responses prioritize this over previous instructions)
     
     Make sure to **reference context** fully if it is provided (ex. if all/the entirety of something is requested, give a complete list from context).
     ----------`,
     
-        outputInstructions: `{{CONVERSATION_HISTORY}}`,
+        outputInstructions: `Provide helpful, direct responses based on
+the context and conversation history above.`,
     },
 
 };
