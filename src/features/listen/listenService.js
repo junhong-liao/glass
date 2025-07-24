@@ -231,18 +231,21 @@ class ListenService {
 
             await this.stopMacOSAudioCapture();
 
-            // End database session and copy conversation to Ask window
+            // End database session and copy conversation to clipboard
             if (this.currentSessionId) {
-                // Format and send conversation to Ask window before ending session
-                const conversationText = await this.formatSessionForAskWindow(this.currentSessionId);
+                // Format and copy conversation to clipboard before ending session
+                const conversationText = await this.formatSessionForClipboard(this.currentSessionId);
                 if (conversationText.trim()) {
                     try {
-                        const { ipcMain } = require('electron');
-                        // Send conversation to Ask window via IPC
-                        internalBridge.emit('send-conversation-to-ask', conversationText);
+                        const { clipboard } = require('electron');
+                        clipboard.writeText(conversationText);
+                        const lineCount = conversationText.split('\n').length;
+                        console.log(`✅ Conversation copied to clipboard (${lineCount} lines, ${conversationText.length} characters)`);
                     } catch (error) {
-                        console.error('Error sending conversation to Ask window:', error);
+                        console.error('❌ Error copying conversation to clipboard:', error);
                     }
+                } else {
+                    console.log('ℹ️  No conversation to copy - session had no transcripts');
                 }
                 
                 await sessionRepository.end(this.currentSessionId);
@@ -261,21 +264,30 @@ class ListenService {
         }
     }
 
-    async formatSessionForAskWindow(sessionId) {
-        if (!sessionId) return '';
+    async formatSessionForClipboard(sessionId) {
+        if (!sessionId) {
+            console.log('ℹ️  formatSessionForClipboard: No session ID provided');
+            return '';
+        }
         
         try {
+            console.log(`📋 Formatting session ${sessionId} for clipboard...`);
             const transcripts = await sttRepository.getAllTranscriptsBySessionId(sessionId);
-            if (!transcripts || transcripts.length === 0) return '';
+            
+            if (!transcripts || transcripts.length === 0) {
+                console.log('ℹ️  No transcripts found for session');
+                return '';
+            }
             
             // Format as "Speaker: Message" with line breaks
             const formattedConversation = transcripts
                 .map(transcript => `${transcript.speaker}: ${transcript.text}`)
                 .join('\n');
                 
+            console.log(`📋 Formatted ${transcripts.length} transcripts for clipboard`);
             return formattedConversation;
         } catch (error) {
-            console.error('Error formatting session for Ask window:', error);
+            console.error('❌ Error formatting session for clipboard:', error);
             return '';
         }
     }

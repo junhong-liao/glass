@@ -164,8 +164,6 @@ contextBridge.exposeInMainWorld('api', {
     onShowTextInput: (callback) => ipcRenderer.on('ask:showTextInput', callback),
     removeOnShowTextInput: (callback) => ipcRenderer.removeListener('ask:showTextInput', callback),
 
-    onPopulateInput: (callback) => ipcRenderer.on('populate-input', callback),
-    removeOnPopulateInput: (callback) => ipcRenderer.removeListener('populate-input', callback),
     
     onScrollResponseUp: (callback) => ipcRenderer.on('aks:scrollResponseUp', callback),
     removeOnScrollResponseUp: (callback) => ipcRenderer.removeListener('aks:scrollResponseUp', callback),

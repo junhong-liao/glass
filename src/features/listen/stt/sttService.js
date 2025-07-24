@@ -756,13 +756,17 @@ class SttService {
             this.sessionRenewTimeout = null;
         }
 
-        // Clear timers
+        // Flush any pending completions before clearing timers
         if (this.myCompletionTimer) {
             clearTimeout(this.myCompletionTimer);
+            console.log('💾 Flushing pending "Me" transcript before closing session');
+            this.flushMyCompletion();
             this.myCompletionTimer = null;
         }
         if (this.theirCompletionTimer) {
             clearTimeout(this.theirCompletionTimer);
+            console.log('💾 Flushing pending "Them" transcript before closing session');
+            this.flushTheirCompletion();
             this.theirCompletionTimer = null;
         }
 

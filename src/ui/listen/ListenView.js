@@ -630,7 +630,7 @@ export class ListenView extends LitElement {
                 : 'Copy Subliminal Analysis'
             : this.viewMode === 'insights'
             ? `Live insights`
-            : `Subliminal is Listening ${this.elapsedTime}`;
+            : `Subliminal is listening ${this.elapsedTime}`;
 
         return html`
             <div class="assistant-container">
