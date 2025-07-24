@@ -243,6 +243,11 @@ contextBridge.exposeInMainWorld('api', {
     // App Control
     quitApplication: () => ipcRenderer.invoke('quit-application'),
     
+    // CLI Installation
+    checkCLIInstallationStatus: () => ipcRenderer.invoke('cli:check-installation-status'),
+    installCLI: () => ipcRenderer.invoke('cli:install'),
+    uninstallCLI: () => ipcRenderer.invoke('cli:uninstall'),
+    
     // Progress Tracking
     pullOllamaModel: (modelName) => ipcRenderer.invoke('ollama:pull-model', modelName),
     

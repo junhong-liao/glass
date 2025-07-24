@@ -527,6 +527,9 @@ export class SettingsView extends LitElement {
         installingModels: { type: Object, state: true },
         // Whisper related properties
         whisperModels: { type: Array, state: true },
+        // CLI installation properties
+        cliInstallationStatus: { type: String, state: true },
+        cliInstallationLoading: { type: Boolean, state: true },
     };
     //////// after_modelStateService ////////
 
@@ -559,6 +562,9 @@ export class SettingsView extends LitElement {
         this.handleUsePicklesKey = this.handleUsePicklesKey.bind(this)
         this.autoUpdateEnabled = true;
         this.autoUpdateLoading = true;
+        // CLI installation
+        this.cliInstallationStatus = 'not-installed';
+        this.cliInstallationLoading = false;
         this.loadInitialData();
         //////// after_modelStateService ////////
     }
@@ -647,6 +653,9 @@ export class SettingsView extends LitElement {
             
             // Load LocalAI status asynchronously to improve initial load time
             this.loadLocalAIStatus();
+            
+            // Load CLI installation status
+            this.loadCLIInstallationStatus();
         } catch (error) {
             console.error('Error loading initial settings data:', error);
         } finally {
@@ -1171,6 +1180,57 @@ export class SettingsView extends LitElement {
         }
     }
 
+    async loadCLIInstallationStatus() {
+        try {
+            const status = await window.api.settingsView.checkCLIInstallationStatus();
+            this.cliInstallationStatus = status;
+            this.requestUpdate();
+        } catch (error) {
+            console.error('Error loading CLI installation status:', error);
+            this.cliInstallationStatus = 'error';
+        }
+    }
+
+    async handleCLIInstallation() {
+        if (this.cliInstallationLoading) return;
+        
+        console.log('[SettingsView] CLI installation clicked, current status:', this.cliInstallationStatus);
+        
+        try {
+            this.cliInstallationLoading = true;
+            this.requestUpdate();
+
+            if (this.cliInstallationStatus === 'installed') {
+                // Uninstall
+                const result = await window.api.settingsView.uninstallCLI();
+                if (result.success) {
+                    this.cliInstallationStatus = 'not-installed';
+                    console.log('[SettingsView] CLI uninstalled successfully');
+                } else {
+                    console.error('[SettingsView] CLI uninstallation failed:', result.error);
+                    alert(`Failed to uninstall CLI command: ${result.error}`);
+                }
+            } else {
+                // Install
+                const result = await window.api.settingsView.installCLI();
+                if (result.success) {
+                    this.cliInstallationStatus = 'installed';
+                    console.log('[SettingsView] CLI installed successfully');
+                    alert('CLI command installed! You can now type "subliminal" in terminal to launch the app.');
+                } else {
+                    console.error('[SettingsView] CLI installation failed:', result.error);
+                    alert(`Failed to install CLI command: ${result.error}`);
+                }
+            }
+        } catch (error) {
+            console.error('[SettingsView] Error during CLI installation:', error);
+            alert(`CLI installation error: ${error.message}`);
+        } finally {
+            this.cliInstallationLoading = false;
+            this.requestUpdate();
+        }
+    }
+
     //////// after_modelStateService ////////
     render() {
         if (this.isLoading) {
@@ -1416,6 +1476,11 @@ export class SettingsView extends LitElement {
                         <span>Personalize / Meeting Notes</span>
                     </button>
                     
+                    <button class="settings-button full-width" @click=${this.handleCLIInstallation} ?disabled=${this.cliInstallationLoading}>
+                        <span>${this.cliInstallationLoading ? 'Installing...' : 
+                               this.cliInstallationStatus === 'installed' ? 'Uninstall CLI Command' : 
+                               'Install CLI Command'}</span>
+                    </button>
                     
                     <button class="settings-button full-width" @click=${this.handleToggleInvisibility}>
                         <span>${this.isContentProtectionOn ? 'Disable Invisibility' : 'Enable Invisibility'}</span>
