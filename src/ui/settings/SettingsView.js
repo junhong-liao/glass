@@ -214,7 +214,7 @@ export class SettingsView extends LitElement {
             border-color: rgba(255, 59, 48, 0.4);
         }
 
-        .move-buttons, .bottom-buttons {
+        .bottom-buttons {
             display: flex;
             gap: 4px;
         }
@@ -1094,15 +1094,6 @@ export class SettingsView extends LitElement {
         console.log('Selected preset:', preset);
     }
 
-    handleMoveLeft() {
-        console.log('Move Left clicked');
-        window.api.settingsView.moveWindowStep('left');
-    }
-
-    handleMoveRight() {
-        console.log('Move Right clicked');
-        window.api.settingsView.moveWindowStep('right');
-    }
 
     async handlePersonalize() {
         console.log('Personalize clicked');
@@ -1424,14 +1415,6 @@ export class SettingsView extends LitElement {
                         <span>Automatic Updates: ${this.autoUpdateEnabled ? 'On' : 'Off'}</span>
                     </button>
                     
-                    <div class="move-buttons">
-                        <button class="settings-button half-width" @click=${this.handleMoveLeft}>
-                            <span>← Move</span>
-                        </button>
-                        <button class="settings-button half-width" @click=${this.handleMoveRight}>
-                            <span>Move →</span>
-                        </button>
-                    </div>
                     
                     <button class="settings-button full-width" @click=${this.handleToggleInvisibility}>
                         <span>${this.isContentProtectionOn ? 'Disable Invisibility' : 'Enable Invisibility'}</span>
