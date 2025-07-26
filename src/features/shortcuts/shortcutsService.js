@@ -69,8 +69,8 @@ class ShortcutsService {
             manualScreenshot: isMac ? 'Cmd+Shift+S' : 'Ctrl+Shift+S',
             previousResponse: isMac ? 'Cmd+[' : 'Ctrl+[',
             nextResponse: isMac ? 'Cmd+]' : 'Ctrl+]',
-            scrollUp: isMac ? 'Cmd+Shift+Up' : 'Ctrl+Shift+Up',
-            scrollDown: isMac ? 'Cmd+Shift+Down' : 'Ctrl+Shift+Down',
+            scrollUp: isMac ? 'Ctrl+Shift+Up' : 'Ctrl+Shift+Up',
+            scrollDown: isMac ? 'Ctrl+Shift+Down' : 'Ctrl+Shift+Down',
         };
     }
 
